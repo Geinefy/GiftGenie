@@ -12,7 +12,7 @@ class GeminiService:
             raise ValueError("Gemini API key is required")
 
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model = genai.GenerativeModel('gemini-2.0-flash-lite')
 
     def generate_gift_recommendations(self, user_message: str, context: str = "", preferences: Dict = None) -> Optional[Dict]:
         """
@@ -136,14 +136,27 @@ Example categories: tech_gadgets, books, home_decor, clothing, fitness_equipment
         Parse Gemini's response and ensure it has the correct format
         """
         try:
-            # Try to parse as JSON first
-            parsed = json.loads(response_text.strip())
+            # Clean the response text - remove markdown code blocks if present
+            clean_text = response_text.strip()
+
+            # Remove ```json and ``` markers if present
+            if clean_text.startswith('```json'):
+                clean_text = clean_text[7:]  # Remove ```json
+            if clean_text.startswith('```'):
+                clean_text = clean_text[3:]   # Remove ```
+            if clean_text.endswith('```'):
+                clean_text = clean_text[:-3]  # Remove ending ```
+
+            clean_text = clean_text.strip()
+
+            # Try to parse as JSON
+            parsed = json.loads(clean_text)
 
             # Validate the structure
             if not isinstance(parsed, dict):
                 raise ValueError("Response is not a dictionary")
 
-            # Ensure required fields exist
+            # Ensure required fields exist and add success flag
             if 'recommendations' not in parsed:
                 parsed['recommendations'] = {}
 
@@ -153,6 +166,9 @@ Example categories: tech_gadgets, books, home_decor, clothing, fitness_equipment
             if 'response' not in parsed:
                 parsed['response'] = "Here are some gift suggestions for you!"
 
+            # Add success flag
+            parsed['success'] = True
+
             # Validate recommendations format
             if not isinstance(parsed['recommendations'], dict):
                 parsed['recommendations'] = {}
@@ -161,11 +177,13 @@ Example categories: tech_gadgets, books, home_decor, clothing, fitness_equipment
             if not isinstance(parsed['questions'], list):
                 parsed['questions'] = []
 
+            logger.info(
+                f"Successfully parsed response with {len(parsed['recommendations'])} recommendations")
             return parsed
 
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
             logger.warning(
-                "Failed to parse JSON response, attempting manual parsing")
+                f"Failed to parse JSON response: {str(e)}, attempting manual parsing")
             return self._manual_parse_response(response_text)
 
     def _manual_parse_response(self, response_text: str) -> Dict:
@@ -176,7 +194,8 @@ Example categories: tech_gadgets, books, home_decor, clothing, fitness_equipment
         result = {
             "questions": [],
             "recommendations": {},
-            "response": response_text.strip()
+            "response": response_text.strip(),
+            "success": True
         }
 
         # Try to extract structured information

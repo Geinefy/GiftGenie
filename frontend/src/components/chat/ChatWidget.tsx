@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Loader2, ShoppingBag } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, ShoppingBag, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatMessage } from "./ChatMessage";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { giftService, type ChatResponse, type Product } from "@/services/giftService";
 
 interface Message {
@@ -18,6 +19,7 @@ interface Message {
 }
 
 export const ChatWidget = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -30,6 +32,8 @@ export const ChatWidget = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSearchingProducts, setIsSearchingProducts] = useState(false);
   const [context, setContext] = useState("");
+  const [allProducts, setAllProducts] = useState<Record<string, Product[]>>({});
+  const [hasRecommendations, setHasRecommendations] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -101,6 +105,10 @@ export const ChatWidget = () => {
       const productResponse = await giftService.searchProducts(recommendations);
       
       if (productResponse.products && Object.keys(productResponse.products).length > 0) {
+        // Store products globally for navigation to gifts page
+        setAllProducts(productResponse.products);
+        setHasRecommendations(true);
+        
         // Add products message
         const productsMessage: Message = {
           role: "assistant",
@@ -119,6 +127,17 @@ export const ChatWidget = () => {
       toast.error("Failed to search for products.");
     } finally {
       setIsSearchingProducts(false);
+    }
+  };
+
+  const handleViewSuggestions = () => {
+    if (Object.keys(allProducts).length > 0) {
+      // Store products in sessionStorage to access from gifts page
+      sessionStorage.setItem('giftSuggestions', JSON.stringify(allProducts));
+      navigate('/gifts');
+      setIsOpen(false);
+    } else {
+      toast.error("No suggestions available. Please ask for gift recommendations first!");
     }
   };
 
@@ -154,13 +173,26 @@ export const ChatWidget = () => {
             <MessageCircle className="w-5 h-5 text-primary" />
             <h3 className="font-semibold">Gift Assistant</h3>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsOpen(false)}
-          >
-            <X className="w-5 h-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            {hasRecommendations && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleViewSuggestions}
+                className="text-primary hover:text-primary/80"
+              >
+                <Gift className="w-4 h-4 mr-1" />
+                View Suggestions
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsOpen(false)}
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
 
         {/* Messages */}
