@@ -1,3 +1,7 @@
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env
+
 # Logs
 frontend/logs
 frontend/*.log
