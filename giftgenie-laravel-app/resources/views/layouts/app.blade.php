@@ -32,5 +32,8 @@
                 {{ $slot }}
             </main>
         </div>
+
+        <!-- Gift Suggestion Modal -->
+        @include('components.gift-suggestion-modal')
     </body>
 </html>

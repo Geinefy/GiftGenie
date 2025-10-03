@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->decimal('price', 10, 2);
-            $table->string('image_url');
-            $table->string('product_url')->nullable();
-            $table->string('category')->nullable();
-            $table->json('tags')->nullable();
+            $table->string('image_url')->nullable();
+            $table->decimal('min_price', 8, 2);
+            $table->decimal('max_price', 8, 2);
+            $table->string('recipient'); // friend, mother, colleague, etc.
+            $table->string('occasion'); // birthday, graduation, wedding, etc.
+            $table->string('country'); // Bangladesh, USA, UK, India, Canada, Australia
+            $table->string('category')->nullable(); // electronics, books, jewelry, etc.
             $table->timestamps();
         });
     }

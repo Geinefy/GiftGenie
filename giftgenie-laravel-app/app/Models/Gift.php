@@ -9,15 +9,17 @@ class Gift extends Model
     protected $fillable = [
         'name',
         'description',
-        'price',
         'image_url',
-        'product_url',
-        'category',
-        'tags'
+        'min_price',
+        'max_price',
+        'recipient',
+        'occasion',
+        'country',
+        'category'
     ];
 
     protected $casts = [
-        'tags' => 'array',
-        'price' => 'decimal:2'
+        'min_price' => 'decimal:2',
+        'max_price' => 'decimal:2'
     ];
 }
