@@ -1,0 +1,1 @@
+Placeholder for assets. Copy hero-gifts.jpg from the frontend src/assets into this folder to show images.
