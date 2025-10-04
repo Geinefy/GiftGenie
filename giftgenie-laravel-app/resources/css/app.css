@@ -135,3 +135,46 @@ html, body {
 	border-color: var(--gg-pastel) !important;
 }
 
+/* --- Classy animations (subtle, tasteful) --- */
+
+/* Modal open: fade backdrop is handled by overlay, the modal content slides up and fades */
+.gg-modal {
+	transform: translateY(10px) scale(0.995);
+	opacity: 0;
+	transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 220ms ease;
+}
+.gg-modal-open {
+	transform: translateY(0) scale(1);
+	opacity: 1;
+}
+
+/* Card entrance */
+@keyframes gg-appear-up {
+	from { transform: translateY(8px); opacity: 0; }
+	to   { transform: translateY(0); opacity: 1; }
+}
+.gg-appear {
+	animation: gg-appear-up 360ms cubic-bezier(.2,.9,.2,1) both;
+}
+
+/* Hover lift (cards & buttons) */
+.gg-elevate {
+	transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease;
+}
+.gg-elevate:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+/* Subtle focus for interactive icons */
+.gg-focusable:focus { outline: none; box-shadow: 0 0 0 4px rgba(0,0,0,0.12); }
+
+/* Smooth theme toggle icon transition */
+#themeIcon { transition: transform 200ms ease, opacity 200ms ease; display:inline-block }
+
+/* Slight delay when showing multiple cards to create a cascading feel if needed */
+.gg-appear-delay-1 { animation-delay: 40ms; }
+.gg-appear-delay-2 { animation-delay: 80ms; }
+.gg-appear-delay-3 { animation-delay: 120ms; }
+
+

@@ -9,7 +9,7 @@
 
 <!-- Modal -->
 <div id="giftSuggestionModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-    <div class="relative top-2 md:top-10 mx-auto p-3 md:p-5 border w-full max-w-6xl shadow-lg rounded-md bg-white min-h-screen md:min-h-0">
+    <div class="relative top-2 md:top-10 mx-auto p-3 md:p-5 border w-full max-w-6xl shadow-lg rounded-md bg-white min-h-screen md:min-h-0 gg-modal">
     <!-- Modal Header -->
     <div class="flex items-center justify-between pb-4 border-b gg-sep">
             <h3 class="text-xl font-semibold text-gray-900">
@@ -201,17 +201,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const FAVORITE_CHATS_KEY = 'giftgenie:favoriteChats';
 
-    // Open modal
+    // Open modal with subtle animation
     btn.onclick = function() {
         modal.classList.remove('hidden');
+        const content = modal.querySelector('.relative');
+        if (content) {
+            content.classList.add('gg-modal');
+            // force reflow then open
+            void content.offsetWidth;
+            content.classList.add('gg-modal-open');
+        }
         loadHistory();
         loadFavorites();
         loadFavoriteChats();
     }
 
-    // Close modal
+    // Close modal with reverse animation
     closeModal.onclick = function() {
-        modal.classList.add('hidden');
+        const content = modal.querySelector('.relative');
+        if (content) {
+            content.classList.remove('gg-modal-open');
+            setTimeout(() => { modal.classList.add('hidden'); }, 240);
+        } else {
+            modal.classList.add('hidden');
+        }
     }
 
     // Close modal when clicking outside
@@ -296,9 +309,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!suggestions || suggestions.length === 0) {
             suggestionsGrid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">No gifts found matching your criteria. Try adjusting your filters.</div>';
         } else {
-            suggestions.forEach(gift => {
+            suggestions.forEach((gift, i) => {
                 const giftCard = createGiftCard(gift);
                 suggestionsGrid.appendChild(giftCard);
+                // Add animation classes after append so animation runs
+                requestAnimationFrame(() => {
+                    giftCard.classList.add('gg-elevate', 'gg-appear', 'gg-appear-delay-' + ((i % 3) + 1));
+                });
             });
         }
         
@@ -307,14 +324,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Create gift card element
     function createGiftCard(gift) {
-        const card = document.createElement('div');
-        card.className = 'bg-white border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300';
+    const card = document.createElement('div');
+    card.className = 'bg-white border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300';
         
         card.innerHTML = `
             <div class="relative">
                 ${gift.image_url ? `<img src="${gift.image_url}" alt="${gift.name}" class="w-full h-32 object-cover">` : '<div class="w-full h-32 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>'}
-                <button onclick="toggleFavorite(${gift.id})" class="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors duration-200">
-                    <svg class="w-5 h-5 text-gray-400 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="toggleFavorite(${gift.id})" class="absolute top-2 right-2 p-1 rounded-full shadow-md transition-colors duration-200 bg-transparent hover:bg-gray-100 dark:hover:bg-opacity-10">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                     </svg>
                 </button>
