@@ -33,7 +33,7 @@
                             <label for="recipient" class="block text-sm font-medium text-gray-700 mb-2">
                                 Who is this gift for?
                             </label>
-                            <select id="recipient" name="recipient" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <select id="recipient" name="recipient" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">Select recipient</option>
                                 <option value="friend">Friend</option>
                                 <option value="mother">Mother</option>
@@ -70,14 +70,14 @@
                             <label for="min_budget" class="block text-sm font-medium text-gray-700 mb-2">
                                 Minimum Budget ($)
                             </label>
-                            <input type="number" id="min_budget" name="min_budget" min="0" step="0.01" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <input type="number" id="min_budget" name="min_budget" min="0" step="0.01" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                         </div>
 
                         <div>
                             <label for="max_budget" class="block text-sm font-medium text-gray-700 mb-2">
                                 Maximum Budget ($)
                             </label>
-                            <input type="number" id="max_budget" name="max_budget" min="0" step="0.01" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <input type="number" id="max_budget" name="max_budget" min="0" step="0.01" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                         </div>
 
                         <!-- Country -->
@@ -85,7 +85,7 @@
                             <label for="country" class="block text-sm font-medium text-gray-700 mb-2">
                                 Country
                             </label>
-                            <select id="country" name="country" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <select id="country" name="country" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">Select country</option>
                                 <option value="Bangladesh">Bangladesh</option>
                                 <option value="USA">USA</option>
@@ -158,14 +158,14 @@
                     </div>
                 </div>
 
-                <!-- Favorites Section -->
+                <!-- Favorite Gifts Section (was 'Favorites') -->
                 <div>
                     <div class="flex items-center justify-between mb-3">
-                        <h4 class="text-lg font-semibold">Favorites</h4>
+                        <h4 class="text-lg font-semibold">Favorite Gifts</h4>
                         <button id="clearFavoritesBtn" class="text-sm text-red-600 hover:text-red-800">Clear All</button>
                     </div>
                     <div id="favoritesContainer" class="space-y-2 max-h-60 overflow-y-auto">
-                        <!-- Favorites will be populated here -->
+                        <!-- Favorite gifts will be populated here -->
                     </div>
                 </div>
 
