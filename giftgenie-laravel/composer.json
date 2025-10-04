@@ -1,0 +1,8 @@
+{
+    "name": "geinefy/giftgenie-laravel",
+    "description": "Minimal scaffold of GiftGenie Laravel app (generated from React frontend)",
+    "type": "project",
+    "require": {
+        "php": "^8.0"
+    }
+}

@@ -1,0 +1,10 @@
+# Basic Laravel / PHP ignores
+/vendor/
+/.env
+/node_modules/
+/public/hot
+/public/storage
+/storage/*.key
+/.idea/
+/.vscode/
+.env.local
