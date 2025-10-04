@@ -95,18 +95,38 @@
                                 <option value="Australia">Australia</option>
                             </select>
                         </div>
+                        
+                        <!-- Prompt / Custom Input for AI -->
+                        <div class="md:col-span-2">
+                            <label for="prompt" class="block text-sm font-medium text-gray-700 mb-2">
+                                Prompt / Gift details (optional)
+                            </label>
+                            <textarea id="prompt" name="prompt" rows="3" placeholder="Describe the recipient, preferences, or a specific prompt for AI-driven scraping later" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        </div>
                     </div>
 
                     <!-- Submit Button -->
                     <div class="flex justify-center pt-4">
-                        <button type="submit" id="searchBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-md font-medium transition-all duration-300">
+                        <div class="flex gap-3">
+                            <button type="submit" id="searchBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-md font-medium transition-all duration-300">
                             <span class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                                 Find Perfect Gifts
                             </span>
-                        </button>
+                            </button>
+
+                            <!-- Save Chat / Favorite Chat Button -->
+                            <button type="button" id="saveChatBtn" title="Save this search/chat to Favorite Chats" class="bg-white border border-gray-300 text-gray-700 px-4 py-3 rounded-md hover:bg-gray-50 transition-all duration-200">
+                                <span class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.966a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.967c.3.922-.755 1.688-1.54 1.118L10 13.348l-3.952 2.874c-.784.57-1.84-.196-1.54-1.118l1.286-3.967a1 1 0 00-.364-1.118L2.05 9.393c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69L9.05 2.927z"/>
+                                    </svg>
+                                    Save Chat
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </form>
 
@@ -148,6 +168,17 @@
                         <!-- Favorites will be populated here -->
                     </div>
                 </div>
+
+                <!-- Favorite Chats Section -->
+                <div class="mt-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-lg font-semibold">Favorite Chats</h4>
+                        <button id="clearFavoriteChatsBtn" class="text-sm text-red-600 hover:text-red-800">Clear All</button>
+                    </div>
+                    <div id="favoriteChatsContainer" class="space-y-2 max-h-60 overflow-y-auto">
+                        <!-- Favorite chats will be populated here -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -164,12 +195,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const suggestionsGrid = document.getElementById('suggestionsGrid');
     const historyContainer = document.getElementById('historyContainer');
     const favoritesContainer = document.getElementById('favoritesContainer');
+    const favoriteChatsContainer = document.getElementById('favoriteChatsContainer');
+    const saveChatBtn = document.getElementById('saveChatBtn');
+    const clearFavoriteChatsBtn = document.getElementById('clearFavoriteChatsBtn');
+
+    const FAVORITE_CHATS_KEY = 'giftgenie:favoriteChats';
 
     // Open modal
     btn.onclick = function() {
         modal.classList.remove('hidden');
         loadHistory();
         loadFavorites();
+        loadFavoriteChats();
     }
 
     // Close modal
@@ -195,6 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
             min_budget: formData.get('min_budget'),
             max_budget: formData.get('max_budget'),
             country: formData.get('country'),
+            prompt: formData.get('prompt'),
             _token: formData.get('_token')
         };
 
@@ -229,11 +267,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
+    // Save Chat to Favorite Chats (localStorage)
+    saveChatBtn.onclick = function() {
+        const formData = new FormData(form);
+        const chat = {
+            recipient: formData.get('recipient') || '',
+            occasion: formData.get('occasion') || '',
+            min_budget: formData.get('min_budget') || '',
+            max_budget: formData.get('max_budget') || '',
+            country: formData.get('country') || '',
+            prompt: formData.get('prompt') || '',
+            timestamp: new Date().toISOString()
+        };
+
+        const chats = JSON.parse(localStorage.getItem(FAVORITE_CHATS_KEY) || '[]');
+        chats.unshift(chat); // newest first
+        localStorage.setItem(FAVORITE_CHATS_KEY, JSON.stringify(chats));
+        loadFavoriteChats();
+        // small feedback
+        saveChatBtn.innerText = 'Saved';
+        setTimeout(() => { saveChatBtn.innerHTML = '<span class="flex items-center">\n                                    <svg class="w-4 h-4 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">\n                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.966a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.967c.3.922-.755 1.688-1.54 1.118L10 13.348l-3.952 2.874c-.784.57-1.84-.196-1.54-1.118l1.286-3.967a1 1 0 00-.364-1.118L2.05 9.393c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69L9.05 2.927z"/>\n                                    </svg>\n                                    Save Chat\n                                </span>'; }, 1200);
+    };
+
     // Display suggestions
     function displaySuggestions(suggestions) {
         suggestionsGrid.innerHTML = '';
         
-        if (suggestions.length === 0) {
+        if (!suggestions || suggestions.length === 0) {
             suggestionsGrid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">No gifts found matching your criteria. Try adjusting your filters.</div>';
         } else {
             suggestions.forEach(gift => {
@@ -279,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(result => {
             historyContainer.innerHTML = '';
             
-            if (result.history.length === 0) {
+            if (!result.history || result.history.length === 0) {
                 historyContainer.innerHTML = '<div class="text-sm text-gray-500 text-center py-4">No search history</div>';
             } else {
                 result.history.forEach(search => {
@@ -311,6 +371,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('min_budget').value = search.min_budget;
             document.getElementById('max_budget').value = search.max_budget;
             document.getElementById('country').value = search.country;
+            if (search.prompt) {
+                document.getElementById('prompt').value = search.prompt;
+            }
         };
         
         return item;
@@ -323,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(result => {
             favoritesContainer.innerHTML = '';
             
-            if (result.favorites.length === 0) {
+            if (!result.favorites || result.favorites.length === 0) {
                 favoritesContainer.innerHTML = '<div class="text-sm text-gray-500 text-center py-4">No favorites yet</div>';
             } else {
                 result.favorites.forEach(gift => {
@@ -357,6 +420,67 @@ document.addEventListener('DOMContentLoaded', function() {
         return item;
     }
 
+    // Favorite Chats: load from localStorage
+    function loadFavoriteChats() {
+        const chats = JSON.parse(localStorage.getItem(FAVORITE_CHATS_KEY) || '[]');
+        favoriteChatsContainer.innerHTML = '';
+
+        if (!chats || chats.length === 0) {
+            favoriteChatsContainer.innerHTML = '<div class="text-sm text-gray-500 text-center py-4">No favorite chats yet</div>';
+            return;
+        }
+
+        chats.forEach((chat, idx) => {
+            const node = createFavoriteChatItem(chat, idx);
+            favoriteChatsContainer.appendChild(node);
+        });
+    }
+
+    function createFavoriteChatItem(chat, index) {
+        const item = document.createElement('div');
+        item.className = 'bg-gray-50 p-3 rounded-md flex items-start justify-between gap-2';
+
+        const title = (chat.recipient || chat.occasion) ? `${chat.recipient || ''} ${chat.occasion ? '• ' + chat.occasion : ''}` : (chat.prompt ? chat.prompt.slice(0, 50) + (chat.prompt.length>50? '...':'') : 'Saved Chat');
+
+        const left = document.createElement('div');
+        left.className = 'flex-1';
+        left.innerHTML = `<div class="font-medium text-sm">${escapeHtml(title)}</div><div class="text-xs text-gray-600">${chat.prompt ? escapeHtml(chat.prompt.slice(0,80)) : ''}</div>`;
+
+        const actions = document.createElement('div');
+        actions.className = 'flex flex-col items-end gap-2';
+
+        const loadBtn = document.createElement('button');
+        loadBtn.className = 'text-sm text-blue-600 hover:underline';
+        loadBtn.innerText = 'Load';
+        loadBtn.onclick = function() {
+            document.getElementById('recipient').value = chat.recipient;
+            document.getElementById('occasion').value = chat.occasion;
+            document.getElementById('min_budget').value = chat.min_budget;
+            document.getElementById('max_budget').value = chat.max_budget;
+            document.getElementById('country').value = chat.country;
+            document.getElementById('prompt').value = chat.prompt || '';
+        };
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'text-sm text-red-600 hover:underline';
+        delBtn.innerText = 'Delete';
+        delBtn.onclick = function() {
+            if (!confirm('Delete this favorite chat?')) return;
+            const chats = JSON.parse(localStorage.getItem(FAVORITE_CHATS_KEY) || '[]');
+            chats.splice(index, 1);
+            localStorage.setItem(FAVORITE_CHATS_KEY, JSON.stringify(chats));
+            loadFavoriteChats();
+        };
+
+        actions.appendChild(loadBtn);
+        actions.appendChild(delBtn);
+
+        item.appendChild(left);
+        item.appendChild(actions);
+
+        return item;
+    }
+
     // Clear history
     document.getElementById('clearHistoryBtn').onclick = function() {
         if (confirm('Are you sure you want to clear search history?')) {
@@ -373,6 +497,13 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(() => loadFavorites())
             .catch(error => console.error('Error clearing favorites:', error));
         }
+    };
+
+    // Clear favorite chats (localStorage)
+    clearFavoriteChatsBtn.onclick = function() {
+        if (!confirm('Clear all favorite chats?')) return;
+        localStorage.removeItem(FAVORITE_CHATS_KEY);
+        loadFavoriteChats();
     };
 
     // Global functions for favorites
@@ -394,5 +525,20 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(() => loadFavorites())
         .catch(error => console.error('Error removing from favorites:', error));
     };
+
+    // small helper to escape HTML when injecting text
+    function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe.replace(/[&<>"'`]/g, function(m) {
+            return ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+                '`': '&#96;'
+            })[m];
+        });
+    }
 });
 </script>
