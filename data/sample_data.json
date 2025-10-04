@@ -1,0 +1,31 @@
+{
+  "sample_products": [
+    {
+      "title": "Wireless Bluetooth Headphones",
+      "description": "High-quality wireless headphones with noise cancellation and 30-hour battery life. Perfect for music lovers and professionals.",
+      "price": 79.99,
+      "image_url": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300",
+      "source_url": "https://example.com/headphones",
+      "category": "Electronics",
+      "keywords": "wireless headphones bluetooth music audio noise cancellation"
+    },
+    {
+      "title": "Organic Coffee Gift Set",
+      "description": "Premium organic coffee beans from around the world. Includes 4 different blends in a beautiful gift box.",
+      "price": 45.99,
+      "image_url": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=300",
+      "source_url": "https://example.com/coffee-set",
+      "category": "Food & Beverages",
+      "keywords": "coffee organic gift set beans premium blend"
+    },
+    {
+      "title": "Smart Fitness Watch",
+      "description": "Advanced fitness tracker with heart rate monitoring, GPS, and smartphone connectivity. Perfect for fitness enthusiasts.",
+      "price": 199.99,
+      "image_url": "https://images.unsplash.com/photo-1557438159-51eec7a6c9e8?w=300",
+      "source_url": "https://example.com/fitness-watch",
+      "category": "Electronics",
+      "keywords": "fitness watch smart tracker health heart rate GPS"
+    }
+  ]
+}

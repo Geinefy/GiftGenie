@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Suggestion App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <i class="fas fa-gift"></i>
+                    Gift Finder BD 🇧🇩
+                </h1>
+                <p class="tagline">Live product search from Bangladeshi e-commerce sites</p>
+            </div>
+        </header>
+
+        <!-- Search Form -->
+        <div class="search-section">
+            <form id="searchForm" class="search-form">
+                <div class="form-group">
+                    <label for="query">
+                        <i class="fas fa-search"></i>
+                        What are you looking for?
+                    </label>
+                    <textarea 
+                        id="query" 
+                        name="query" 
+                        placeholder="Describe what you're looking for... (e.g., 'wireless headphones for music lover', 'birthday gift for tech enthusiast', 'something for cooking')"
+                        rows="3"
+                    ></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="occasion">
+                            <i class="fas fa-calendar-alt"></i>
+                            Occasion
+                        </label>
+                        <select id="occasion" name="occasion">
+                            <option value="">Any occasion</option>
+                            <option value="birthday">Birthday</option>
+                            <option value="wedding">Wedding</option>
+                            <option value="anniversary">Anniversary</option>
+                            <option value="christmas">Christmas</option>
+                            <option value="valentine">Valentine's Day</option>
+                            <option value="graduation">Graduation</option>
+                            <option value="baby shower">Baby Shower</option>
+                            <option value="housewarming">Housewarming</option>
+                            <option value="retirement">Retirement</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="interests">
+                            <i class="fas fa-heart"></i>
+                            Interests
+                        </label>
+                        <input 
+                            type="text" 
+                            id="interests" 
+                            name="interests" 
+                            placeholder="e.g., tech, fitness, cooking, music"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="minPrice">
+                            <i class="fas fa-dollar-sign"></i>
+                            Min Price
+                        </label>
+                        <input 
+                            type="number" 
+                            id="minPrice" 
+                            name="minPrice" 
+                            min="0" 
+                            step="0.01" 
+                            placeholder="0.00"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxPrice">
+                            <i class="fas fa-dollar-sign"></i>
+                            Max Price
+                        </label>
+                        <input 
+                            type="number" 
+                            id="maxPrice" 
+                            name="maxPrice" 
+                            min="0" 
+                            step="0.01" 
+                            placeholder="No limit"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="country">
+                            <i class="fas fa-globe"></i>
+                            Country/Region
+                        </label>
+                        <select id="country" name="country">
+                            <option value="Bangladesh" selected>🇧🇩 Bangladesh</option>
+                            <option value="India">🇮🇳 India</option>
+                            <option value="US">🇺🇸 United States</option>
+                            <option value="UK">🇬🇧 United Kingdom</option>
+                            <option value="Canada">🇨🇦 Canada</option>
+                            <option value="Australia">🇦🇺 Australia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                    Find Fresh Products
+                </button>
+            </form>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Searching for the perfect gifts...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="results-section hidden">
+            <div class="results-header">
+                <h2 id="resultsTitle">Gift Suggestions</h2>
+                <p id="resultsCount" class="results-count"></p>
+            </div>
+            
+            <div id="productsGrid" class="products-grid">
+                <!-- Products will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="pagination hidden">
+                <button id="prevBtn" class="pagination-btn" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+                <span id="pageInfo" class="page-info">Page 1</span>
+                <button id="nextBtn" class="pagination-btn">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message hidden">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Something went wrong. Please try again.</p>
+        </div>
+
+        <!-- Sample Searches -->
+        <div class="sample-searches">
+            <h3>Need inspiration? Try these searches:</h3>
+            <div class="sample-tags">
+                <button class="sample-tag" data-query="wireless headphones for music lover">🎧 Music Lover</button>
+                <button class="sample-tag" data-query="fitness tracker for health enthusiast">💪 Fitness Enthusiast</button>
+                <button class="sample-tag" data-query="kitchen gadgets for cooking">🍳 Cooking Lover</button>
+                <button class="sample-tag" data-query="luxury items for special occasion">✨ Luxury Gifts</button>
+                <button class="sample-tag" data-query="tech gadgets for gadget lover">📱 Tech Geek</button>
+                <button class="sample-tag" data-query="home decor for new home">🏠 Home Decor</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 Gift Finder App. Find the perfect gift for every occasion.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
