@@ -30,7 +30,7 @@
                         <div class="flex justify-between items-center">
                             <span class="text-2xl font-bold text-blue-600">${{ number_format(is_array($gift) ? $gift['price'] : $gift->price, 2) }}</span>
                             <a href="{{ is_array($gift) ? $gift['product_url'] : $gift->product_url }}" 
-                               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm transition-colors">
+                               class="gg-primary-gradient text-white px-4 py-2 rounded-md text-sm transition-colors">
                                 View Details
                             </a>
                         </div>

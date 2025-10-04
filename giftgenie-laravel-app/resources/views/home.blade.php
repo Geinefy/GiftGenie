@@ -9,7 +9,7 @@
                 <div class="space-y-6">
                     <h1 class="text-4xl md:text-6xl font-bold leading-tight">
                         Find the 
-                        <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        <span style="background-image: linear-gradient(90deg,var(--primary-start),var(--primary-end)); -webkit-background-clip: text; background-clip: text; color: transparent;">
                             Perfect Gift
                         </span> 
                         with AI
@@ -19,7 +19,7 @@
                         for any occasion. Just describe the person, and we'll do the rest!
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="/gifts" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-all inline-flex items-center justify-center">
+                        <a href="/gifts" class="gg-primary-gradient px-8 py-3 rounded-lg font-semibold transition-all inline-flex items-center justify-center">
                             Start Finding Gifts 
                             <i data-lucide="arrow-right" class="ml-2 w-4 h-4"></i>
                         </a>

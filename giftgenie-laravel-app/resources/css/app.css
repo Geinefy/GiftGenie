@@ -1,3 +1,137 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom theme variables for GiftGenie palette */
+:root {
+	--gg-deep: #003135;
+	--gg-deeper: #024950;
+	--gg-warm: #964734;
+	--gg-pastel: #0FA4AF;
+	--gg-sky: #AFDDE5;
+
+	--bg: #ffffff;
+	--surface: #f9fafb;
+	--text: #0f172a;
+	--muted: #6b7280;
+
+	/* separator color for lines */
+	--separator: #e5e7eb; /* light gray */
+}
+
+.dark {
+	/* near-black backgrounds for deep dark mode */
+	--bg: #000000;
+	--surface: #0b0b0b; /* slightly lighter than pure black for surfaces */
+	--text: #e6f7f6;
+	--muted: #9ca3af;
+	/* keep brand colors but can be adjusted for dark mode if needed */
+	--gg-deep: #003135;
+	--gg-deeper: #024950;
+	--gg-warm: #964734;
+	--gg-pastel: #0FA4AF;
+	--gg-sky: #AFDDE5;
+
+	/* darker separator for dark mode */
+	--separator: #2d2d2d;
+}
+
+/* Accent palette based on provided artwork (4-color theme). Adjust as needed. */
+:root {
+	--accent-1: #00D1A1; /* teal/green */
+	--accent-2: #FF9F1C; /* orange */
+	--accent-3: #00D8FF; /* cyan */
+	--accent-4: #FF2DCE; /* magenta */
+
+	/* primary gradient uses accent-1 -> accent-4 by default */
+	--primary-start: var(--accent-1);
+	--primary-end: var(--accent-4);
+}
+
+.dark {
+	--accent-1: #00E6B8; /* slightly brighter for dark bg */
+	--accent-2: #FFB348;
+	--accent-3: #33E9FF;
+	--accent-4: #FF59D9;
+
+	--primary-start: var(--accent-1);
+	--primary-end: var(--accent-4);
+}
+
+/* Primary gradient helper that overrides Tailwind utility gradient when applied */
+.gg-primary-gradient {
+	background-image: linear-gradient(90deg, var(--primary-start), var(--primary-end)) !important;
+	color: white !important;
+}
+
+/* Accent text utility */
+.text-accent-1 { color: var(--accent-1) !important; }
+.text-accent-2 { color: var(--accent-2) !important; }
+.text-accent-3 { color: var(--accent-3) !important; }
+.text-accent-4 { color: var(--accent-4) !important; }
+
+/* Navbar style that adapts to light/dark using CSS variables */
+.gg-navbar {
+	background-color: var(--surface) !important;
+	color: var(--text) !important;
+	border-bottom: 1px solid rgba(15,23,42,0.04);
+}
+.dark .gg-navbar { border-bottom-color: rgba(255,255,255,0.06) !important; }
+
+/* Small helpers to use variables with Tailwind utilities by using the CSS var() directly in component classes where needed.
+	 Example: style="background-color:var(--gg-deep); color:var(--text)" or define small utility classes if needed. */
+
+/* Apply base colors from variables */
+html, body {
+	background-color: var(--bg);
+	color: var(--text);
+}
+
+/* Dark-mode overrides for common Tailwind utility classes used across the app.
+	 These override the compiled Tailwind utilities when `.dark` is present so existing
+	 templates that use classes like `bg-white` / `text-gray-900` will adapt. */
+.dark .bg-white { background-color: var(--surface) !important; }
+.dark .bg-gray-50 { background-color: var(--surface) !important; }
+.dark .bg-gray-100 { background-color: rgba(255,255,255,0.03) !important; }
+.dark .bg-gray-200 { background-color: rgba(255,255,255,0.04) !important; }
+
+.dark .text-gray-900 { color: var(--text) !important; }
+.dark .text-gray-800 { color: var(--text) !important; }
+.dark .text-gray-700 { color: var(--muted) !important; }
+.dark .text-gray-600 { color: var(--muted) !important; }
+.dark .text-gray-500 { color: var(--muted) !important; }
+
+.dark .border-gray-100 { border-color: rgba(255,255,255,0.06) !important; }
+.dark .border-gray-200 { border-color: rgba(255,255,255,0.04) !important; }
+
+/* Hover variants (Tailwind compiles hover: classes with escaped colons) */
+.dark .hover\:bg-gray-100:hover { background-color: rgba(255,255,255,0.03) !important; }
+.dark .hover\:bg-gray-200:hover { background-color: rgba(255,255,255,0.04) !important; }
+
+/* Buttons and badges that use bg-white/text-gray classes will follow variables */
+.dark .btn, .dark .card { background-color: var(--surface); color: var(--text); }
+
+/* separator helper: use var to color borders */
+.gg-sep { border-color: var(--separator) !important; }
+
+/* Form controls in dark mode: make inputs/selects/textarea use surface and readable text/placeholder */
+.dark input,
+.dark select,
+.dark textarea {
+	background-color: var(--surface) !important;
+	color: var(--text) !important;
+	border-color: rgba(255,255,255,0.06) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder,
+.dark select::placeholder {
+	color: rgba(255,255,255,0.6) !important;
+}
+
+.dark .focus\:ring-blue-500:focus,
+.dark .focus\:border-blue-500:focus {
+	box-shadow: 0 0 0 3px rgba(15, 164, 175, 0.12) !important; /* subtle ring using gg-pastel-ish */
+	border-color: var(--gg-pastel) !important;
+}
+

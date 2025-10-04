@@ -3,9 +3,12 @@
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
-        <div>
-            <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-100">
-                <i data-lucide="gift" class="w-8 h-8 text-blue-600"></i>
+        <div class="text-center">
+            <div class="flex items-center justify-center gap-4">
+                <div class="h-12 w-12 flex items-center justify-center rounded-full" style="background-color:var(--accent-3)">
+                    <i data-lucide="gift" class="w-8 h-8 text-white"></i>
+                </div>
+                <a href="/" class="text-sm text-gray-600 hover:text-gray-800">Home</a>
             </div>
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 Welcome to GiftGenius
@@ -62,10 +65,10 @@
                 </div>
 
                 <div>
-                    <button type="submit" 
-                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Sign in
-                    </button>
+                        <button type="submit" 
+                                class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white gg-primary-gradient focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Sign in
+                        </button>
                 </div>
             </form>
         </div>
@@ -103,7 +106,7 @@
 
                 <div>
                     <button type="submit" 
-                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white gg-primary-gradient focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Create Account
                     </button>
                 </div>

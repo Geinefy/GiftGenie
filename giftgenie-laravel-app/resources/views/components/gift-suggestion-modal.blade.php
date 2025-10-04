@@ -1,6 +1,6 @@
 <!-- Floating Button -->
 <div class="fixed bottom-6 right-6 z-50">
-    <button id="giftSuggestionBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110">
+    <button id="giftSuggestionBtn" class="gg-primary-gradient text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
         </svg>
@@ -10,8 +10,8 @@
 <!-- Modal -->
 <div id="giftSuggestionModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
     <div class="relative top-2 md:top-10 mx-auto p-3 md:p-5 border w-full max-w-6xl shadow-lg rounded-md bg-white min-h-screen md:min-h-0">
-        <!-- Modal Header -->
-        <div class="flex items-center justify-between pb-4 border-b">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between pb-4 border-b gg-sep">
             <h3 class="text-xl font-semibold text-gray-900">
                 🎁 Find Perfect Gifts
             </h3>
@@ -108,7 +108,7 @@
                     <!-- Submit Button -->
                     <div class="flex justify-center pt-4">
                         <div class="flex gap-3">
-                            <button type="submit" id="searchBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-md font-medium transition-all duration-300">
+                            <button type="submit" id="searchBtn" class="gg-primary-gradient px-8 py-3 rounded-md font-medium transition-all duration-300">
                             <span class="flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -146,14 +146,14 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="w-full lg:w-80 border-t lg:border-t-0 lg:border-l pt-4 lg:pt-0 lg:pl-4">
+            <div class="w-full lg:w-80 border-t lg:border-t-0 lg:border-l pt-6 lg:pt-0 lg:pl-4 lg:m-2 gg-sep">
                 <!-- History Section -->
                 <div class="mb-6">
                     <div class="flex items-center justify-between mb-3">
                         <h4 class="text-lg font-semibold">Search History</h4>
-                        <button id="clearHistoryBtn" class="text-sm text-red-600 hover:text-red-800">Clear All</button>
+                        <button id="clearHistoryBtn" class="text-sm text-gray-400 hover:text-gray-200">🗑️ Clear All</button>
                     </div>
-                    <div id="historyContainer" class="space-y-2 max-h-60 overflow-y-auto">
+                    <div id="historyContainer" class="space-y-2 max-h-60 overflow-y-auto mt-3">
                         <!-- History items will be populated here -->
                     </div>
                 </div>
@@ -162,7 +162,7 @@
                 <div>
                     <div class="flex items-center justify-between mb-3">
                         <h4 class="text-lg font-semibold">Favorite Gifts</h4>
-                        <button id="clearFavoritesBtn" class="text-sm text-red-600 hover:text-red-800">Clear All</button>
+                        <button id="clearFavoritesBtn" class="text-sm text-gray-400 hover:text-gray-200">🗑️ Clear All</button>
                     </div>
                     <div id="favoritesContainer" class="space-y-2 max-h-60 overflow-y-auto">
                         <!-- Favorite gifts will be populated here -->
@@ -173,7 +173,7 @@
                 <div class="mt-6">
                     <div class="flex items-center justify-between mb-3">
                         <h4 class="text-lg font-semibold">Favorite Chats</h4>
-                        <button id="clearFavoriteChatsBtn" class="text-sm text-red-600 hover:text-red-800">Clear All</button>
+                        <button id="clearFavoriteChatsBtn" class="text-sm text-gray-400 hover:text-gray-200">🗑️ Clear All</button>
                     </div>
                     <div id="favoriteChatsContainer" class="space-y-2 max-h-60 overflow-y-auto">
                         <!-- Favorite chats will be populated here -->
@@ -409,10 +409,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="font-medium text-sm">${gift.name}</div>
                     <div class="text-xs text-gray-600">$${gift.min_price} - $${gift.max_price}</div>
                 </div>
-                <button onclick="removeFromFavorites(${gift.id})" class="text-red-500 hover:text-red-700 ml-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                <button onclick="removeFromFavorites(${gift.id})" class="ml-2 text-gray-400 hover:text-gray-200" title="Remove">
+                    🗑️
                 </button>
             </div>
         `;
@@ -450,8 +448,9 @@ document.addEventListener('DOMContentLoaded', function() {
         actions.className = 'flex flex-col items-end gap-2';
 
         const loadBtn = document.createElement('button');
-        loadBtn.className = 'text-sm text-blue-600 hover:underline';
-        loadBtn.innerText = 'Load';
+        loadBtn.className = 'p-1 rounded-md text-blue-600 hover:bg-blue-50 dark:hover:bg-opacity-10';
+        loadBtn.title = 'Load';
+        loadBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M12 3l9 9-9 9"/></svg>`;
         loadBtn.onclick = function() {
             document.getElementById('recipient').value = chat.recipient;
             document.getElementById('occasion').value = chat.occasion;
@@ -461,9 +460,10 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('prompt').value = chat.prompt || '';
         };
 
-        const delBtn = document.createElement('button');
-        delBtn.className = 'text-sm text-red-600 hover:underline';
-        delBtn.innerText = 'Delete';
+    const delBtn = document.createElement('button');
+    delBtn.className = 'p-1 rounded-md text-gray-400 hover:bg-gray-100 dark:hover:bg-opacity-10';
+    delBtn.title = 'Delete';
+    delBtn.innerHTML = '🗑️';
         delBtn.onclick = function() {
             if (!confirm('Delete this favorite chat?')) return;
             const chats = JSON.parse(localStorage.getItem(FAVORITE_CHATS_KEY) || '[]');

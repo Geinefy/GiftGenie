@@ -1,15 +1,15 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="gg-navbar">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+    <div class="flex h-16 items-center justify-between">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('home') }}" class="flex items-center gap-2 font-bold text-xl">
-                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-8 h-8 text-accent-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
                         </svg>
-                        <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        <span style="background-image: linear-gradient(90deg,var(--primary-start),var(--primary-end)); -webkit-background-clip: text; background-clip: text; color: transparent;">
                             GiftGenius
                         </span>
                     </a>
@@ -70,12 +70,16 @@
             <!-- Guest Links -->
             @guest
             <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4">
+                <button id="themeToggle" title="Toggle theme" class="inline-flex items-center px-3 py-2 text-sm leading-4 font-medium rounded-md text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-transparent">
+                    <span id="themeIcon">☀️</span>
+                </button>
                 <a href="{{ route('login') }}" class="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium">
                     {{ __('Login') }}
                 </a>
-                <a href="{{ route('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                <a href="{{ route('register') }}" class="gg-primary-gradient text-white px-4 py-2 rounded-md text-sm font-medium">
                     {{ __('Register') }}
                 </a>
+                
             </div>
             @endguest
 
@@ -149,3 +153,43 @@
         @endguest
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const key = 'giftgenie:theme';
+        const toggle = document.getElementById('themeToggle');
+        const icon = document.getElementById('themeIcon');
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                if (icon) icon.textContent = '🌙';
+            } else {
+                document.documentElement.classList.remove('dark');
+                if (icon) icon.textContent = '☀️';
+            }
+        }
+
+        // initialize
+        try {
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                applyTheme(saved);
+            } else {
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(prefersDark ? 'dark' : 'light');
+            }
+        } catch (e) {
+            // ignore
+        }
+
+        if (toggle) {
+            toggle.addEventListener('click', function() {
+                const isDark = document.documentElement.classList.contains('dark');
+                const next = isDark ? 'light' : 'dark';
+                applyTheme(next);
+                try { localStorage.setItem(key, next); } catch (e) {}
+            });
+        }
+    });
+</script>
