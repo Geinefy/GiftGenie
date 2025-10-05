@@ -2,8 +2,6 @@ import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
-
-
 export interface GiftItem {
   id: string;
   name: string;
