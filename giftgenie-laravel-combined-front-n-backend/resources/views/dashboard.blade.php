@@ -13,18 +13,27 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <!-- Stats Cards -->
-                <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer" onclick="viewAllFoundGifts()">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Gifts Found</p>
                             <p class="text-3xl font-bold text-gray-900">{{ $stats['gifts_found'] ?? 0 }}</p>
+                            @if(($stats['gifts_found'] ?? 0) > 0)
+                                <p class="text-xs text-blue-600 mt-1">Click to view all</p>
+                            @endif
                         </div>
                         <div class="bg-blue-100 p-3 rounded-full">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7">
-                                </path>
-                            </svg>
+                            @if(($stats['gifts_found'] ?? 0) > 0)
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            @else
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7">
+                                    </path>
+                                </svg>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -85,13 +94,25 @@
                     <h2 class="text-xl font-semibold mb-4">Recent Searches</h2>
                     <div class="space-y-3">
                         @forelse($recentSessions as $session)
-                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                <div class="flex-1">
                                     <p class="font-medium">
                                         {{ \Illuminate\Support\Str::limit($session->initial_prompt, 50) }}</p>
                                     <p class="text-sm text-gray-600">{{ $session->created_at->diffForHumans() }}</p>
                                 </div>
-                                <span class="text-blue-600 text-sm">{{ $session->gifts_found ?? 0 }} results</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-blue-600 text-sm">{{ $session->gifts_found ?? 0 }} results</span>
+                                    @if(($session->gifts_found ?? 0) > 0)
+                                        <a href="{{ route('found.gifts') }}?session={{ $session->session_uuid }}" 
+                                           class="inline-flex items-center px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition-colors">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                            </svg>
+                                            View
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         @empty
                             <div class="text-center py-4">
@@ -158,6 +179,22 @@
                     console.error('Error:', error);
                     alert('Failed to update favorite status');
                 });
+        }
+
+        // View all found gifts function
+        function viewAllFoundGifts() {
+            @if(($stats['gifts_found'] ?? 0) > 0)
+                @if(isset($recentSessions) && $recentSessions->count() > 0)
+                    // Redirect to the most recent session's found gifts
+                    window.location.href = '{{ route("found.gifts") }}?session={{ $recentSessions->first()->session_uuid }}';
+                @else
+                    // Fallback: redirect to gifts page to start new search
+                    window.location.href = '{{ route("gifts") }}';
+                @endif
+            @else
+                // No gifts found, redirect to gifts page to start searching
+                window.location.href = '{{ route("gifts") }}';
+            @endif
         }
     </script>
 </x-app-layout>

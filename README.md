@@ -386,10 +386,16 @@ cp .env.example .env
 ```bash
 php artisan key:generate
 ```
-
 6. Create SQLite database
 ```bash
+# For Linux
 touch database/database.sqlite
+
+# For Windows (PowerShell)
+New-Item -Path "database/database.sqlite" -ItemType "file" -Force
+
+# For Windows (Command Prompt)
+type nul > "database\database.sqlite"
 ```
 
 7. Run database migrations and seeders

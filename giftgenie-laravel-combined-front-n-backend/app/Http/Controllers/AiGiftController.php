@@ -165,17 +165,43 @@ class AiGiftController extends Controller
                 'results_count' => count($gifts),
             ]);
 
-            return view('gifts', [
-                'gifts' => $gifts,
-                'sessionId' => $sessionUuid,
-                'aiResponse' => $aiData,
-                'totalFound' => count($gifts),
-                'totalBudget' => $totalBudget
-            ]);
+            return redirect()->route('found.gifts', ['session' => $sessionUuid]);
 
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Failed to get gift suggestions: ' . $e->getMessage()]);
         }
+    }
+
+    public function showFoundGifts(Request $request)
+    {
+        $sessionId = $request->get('session');
+        
+        if (!$sessionId) {
+            return redirect()->route('gifts')->with('error', 'No search session found.');
+        }
+
+        // Get the chat session
+        $chatSession = ChatSession::where('session_uuid', $sessionId)->first();
+        
+        if (!$chatSession) {
+            return redirect()->route('gifts')->with('error', 'Search session not found.');
+        }
+
+        // Get gifts from this session
+        $gifts = $chatSession->aiGeneratedGifts;
+        
+        // Calculate total budget
+        $totalBudget = $gifts->sum('price');
+        $totalFound = $gifts->count();
+
+        return view('found-gifts', [
+            'gifts' => $gifts,
+            'sessionId' => $sessionId,
+            'aiResponse' => $chatSession->ai_response,
+            'totalFound' => $totalFound,
+            'totalBudget' => $totalBudget,
+            'chatSession' => $chatSession
+        ]);
     }
 
     public function toggleFavorite(Request $request)

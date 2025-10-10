@@ -1,32 +1,3 @@
-frontend/.env.local
-frontend/.env.development.local
-frontend/.env
-
-# Logs
-frontend/logs
-frontend/*.log
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/yarn-error.log*
-frontend/pnpm-debug.log*
-frontend/lerna-debug.log*
-
-frontend/node_modules
-frontend/dist
-frontend/dist-ssr
-frontend/*.local
-
-# Editor directories and files
-frontend/.vscode/*
-!frontend/.vscode/extensions.json
-frontend/.idea
-frontend/.DS_Store
-frontend/*.suo
-frontend/*.ntvs*
-frontend/*.njsproj
-frontend/*.sln
-frontend/*.sw?
-frontend/.env
 
 # Ai-part
 ai-part/__pycache__
@@ -34,31 +5,7 @@ ai-part/*.pyc
 ai-part/.env
 ai-part/venv/
 
-# backend
-backend/*.log
-backend/.DS_Store
-backend/.env
-backend/.env.backup
-backend/.env.production
-backend/.phpactor.json
-backend/.phpunit.result.cache
-backend/.fleet
-backend/.idea
-backend/.nova
-backend/.phpunit.cache
-backend/.vscode
-backend/.zed
-backend/auth.json
-backend/node_modules
-backend/public/build
-backend/public/hot
-backend/public/storage
-backend/storage/*.key
-backend/storage/pail
-backend/vendor
-backend/Homestead.json
-backend/Homestead.yaml
-backend/Thumbs.db
+
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -71,58 +18,40 @@ backend/Thumbs.db
 
 .env
 
+# giftgenie-laravel-combined-front-n-backend gitignore
+giftgenie-laravel-combined-front-n-backend/*.log
+giftgenie-laravel-combined-front-n-backend/.DS_Store
+giftgenie-laravel-combined-front-n-backend/.env
+giftgenie-laravel-combined-front-n-backend/.env.backup
+giftgenie-laravel-combined-front-n-backend/.env.production
+giftgenie-laravel-combined-front-n-backend/.phpactor.json
+giftgenie-laravel-combined-front-n-backend/.phpunit.result.cache
+giftgenie-laravel-combined-front-n-backend/.fleet
+giftgenie-laravel-combined-front-n-backend/.idea
+giftgenie-laravel-combined-front-n-backend/.nova
+giftgenie-laravel-combined-front-n-backend/.phpunit.cache
+giftgenie-laravel-combined-front-n-backend/.vscode
+giftgenie-laravel-combined-front-n-backend/.zed
+giftgenie-laravel-combined-front-n-backend/auth.json
+giftgenie-laravel-combined-front-n-backend/node_modules
+giftgenie-laravel-combined-front-n-backend/public/build
+giftgenie-laravel-combined-front-n-backend/public/hot
+giftgenie-laravel-combined-front-n-backend/public/storage
+giftgenie-laravel-combined-front-n-backend/storage/*.key
+giftgenie-laravel-combined-front-n-backend/storage/pail
+giftgenie-laravel-combined-front-n-backend/vendor
+giftgenie-laravel-combined-front-n-backend/Homestead.json
+giftgenie-laravel-combined-front-n-backend/Homestead.yaml
+giftgenie-laravel-combined-front-n-backend/Thumbs.db
+giftgenie-laravel-combined-front-n-backend/.vscode/*
+giftgenie-laravel-combined-front-n-backend/!.vscode/extensions.json
+giftgenie-laravel-combined-front-n-backend/.idea
+giftgenie-laravel-combined-front-n-backend/.DS_Store
+giftgenie-laravel-combined-front-n-backend/*.suo
+giftgenie-laravel-combined-front-n-backend/*.ntvs*
+giftgenie-laravel-combined-front-n-backend/*.njsproj
+giftgenie-laravel-combined-front-n-backend/*.sln
+giftgenie-laravel-combined-front-n-backend/*.sw?
 
-
-# ISD backend gitignore
-
-ISD_backend/*.log
-ISD_backend/.DS_Store
-ISD_backend/.env
-ISD_backend/.env.backup
-ISD_backend/.env.production
-ISD_backend/.phpactor.json
-ISD_backend/.phpunit.result.cache
-ISD_backend/.fleet
-ISD_backend/.idea
-ISD_backend/.nova
-ISD_backend/.phpunit.cache
-ISD_backend/.vscode
-ISD_backend/.zed
-ISD_backend/auth.json
-ISD_backend/node_modules
-ISD_backend/public/build
-ISD_backend/public/hot
-ISD_backend/public/storage
-ISD_backend/storage/*.key
-ISD_backend/storage/pail
-ISD_backend/vendor
-ISD_backend/Homestead.json
-ISD_backend/Homestead.yaml
-ISD_backend/Thumbs.db
-
-# giftgenie-laravel-app gitignore
-giftgenie-laravel-app/*.log
-giftgenie-laravel-app/.DS_Store
-giftgenie-laravel-app/.env
-giftgenie-laravel-app/.env.backup
-giftgenie-laravel-app/.env.production
-giftgenie-laravel-app/.phpactor.json
-giftgenie-laravel-app/.phpunit.result.cache
-giftgenie-laravel-app/.fleet
-giftgenie-laravel-app/.idea
-giftgenie-laravel-app/.nova
-giftgenie-laravel-app/.phpunit.cache
-giftgenie-laravel-app/.vscode
-giftgenie-laravel-app/.zed
-giftgenie-laravel-app/auth.json
-giftgenie-laravel-app/node_modules
-giftgenie-laravel-app/public/build
-giftgenie-laravel-app/public/hot
-giftgenie-laravel-app/public/storage
-giftgenie-laravel-app/storage/*.key
-giftgenie-laravel-app/storage/pail
-giftgenie-laravel-app/vendor
-giftgenie-laravel-app/Homestead.json
-giftgenie-laravel-app/Homestead.yaml
-giftgenie-laravel-app/Thumbs.db
+giftgenie-laravel-combined-front-n-backend/.env
 

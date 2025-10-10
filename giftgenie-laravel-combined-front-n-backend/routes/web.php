@@ -13,6 +13,7 @@ Route::get('/gifts', [GiftsController::class, 'index'])->name('gifts');
 
 // AI Gift Search routes
 Route::post('/search-gifts', [AiGiftController::class, 'searchGifts'])->name('ai.search.gifts');
+Route::get('/found-gifts', [AiGiftController::class, 'showFoundGifts'])->name('found.gifts');
 Route::post('/toggle-favorite/{gift}', [AiGiftController::class, 'toggleFavorite'])->name('ai.toggle.favorite');
 
 // Gift Suggestion API routes

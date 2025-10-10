@@ -12,7 +12,7 @@ class GeminiService:
             raise ValueError("Gemini API key is required")
 
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-2.0-flash-lite')
+        self.model = genai.GenerativeModel('gemini-2.0-flash')
 
     def generate_gift_recommendations(self, user_message: str, context: str = "", preferences: Dict = None) -> Optional[Dict]:
         """
