@@ -57,38 +57,40 @@ export const ChatWidget = () => {
     setIsLoading(true);
 
     try {
-      // Send message through our Laravel backend API
-      const chatResponse = await giftService.sendChatMessage(currentInput);
+      // Send message to our Python API
+      const response = await giftService.sendChatMessage(currentInput, context);
       
-      if (!chatResponse.success) {
-        throw new Error(chatResponse.message || "Failed to get AI response");
+      if (!response.success) {
+        throw new Error("Failed to get AI response");
       }
 
       // Create assistant message with AI response
       const assistantMessage: Message = {
         role: "assistant",
-        content: chatResponse.data.response || "I've generated some gift recommendations for you!",
+        content: response.response || "I've generated some gift recommendations for you!",
         timestamp: new Date(),
-        questions: chatResponse.data.questions,
-        recommendations: undefined, // Backend doesn't return recommendations directly
+        questions: response.questions,
+        recommendations: response.recommendations,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
       
       // Update context for next message
-      setContext(prev => prev + "\nUser: " + currentInput + "\nAssistant: " + chatResponse.data.response);
+      setContext(prev => prev + "\nUser: " + currentInput + "\nAssistant: " + response.response);
 
-      // Search for products based on the AI response using the history ID
-      await searchForProductsFromQuery(currentInput, chatResponse.data.history_id);
+      // If we have recommendations, search for products
+      if (response.recommendations && Object.keys(response.recommendations).length > 0) {
+        await searchForProducts(response.recommendations);
+      }
 
     } catch (error) {
       console.error("Chat error:", error);
-      toast.error("Failed to get response. Please check the backend connection.");
+      toast.error("Failed to get response. Please make sure the AI server is running.");
       
       // Add error message
       setMessages((prev) => [...prev, {
         role: "assistant",
-        content: "Sorry, I'm having trouble connecting to the backend service. Please ensure the Laravel backend is running.",
+        content: "Sorry, I'm having trouble connecting to the AI service. Please make sure the Python API server is running on localhost:5000.",
         timestamp: new Date(),
       }]);
     } finally {
@@ -96,33 +98,29 @@ export const ChatWidget = () => {
     }
   };
 
-  const searchForProductsFromQuery = async (query: string, historyId: number) => {
+  const searchForProducts = async (recommendations: Record<string, string>) => {
     setIsSearchingProducts(true);
     
     try {
-      const productResponse = await giftService.searchProducts(query, 6, historyId);
+      const productResponse = await giftService.searchProducts(recommendations);
       
-      if (productResponse.success && productResponse.data.products && productResponse.data.products.length > 0) {
+      if (productResponse.products && Object.keys(productResponse.products).length > 0) {
         // Store products globally for navigation to gifts page
-        const productsObject = {
-          "General Gifts": productResponse.data.products
-        };
-        
-        setAllProducts(productsObject);
+        setAllProducts(productResponse.products);
         setHasRecommendations(true);
         
         // Add products message
         const productsMessage: Message = {
           role: "assistant",
-          content: `I found ${productResponse.data.products.length} gift suggestions for you!`,
+          content: `I found ${productResponse.total_products} products across ${productResponse.total_categories} categories!`,
           timestamp: new Date(),
-          products: productsObject,
+          products: productResponse.products,
         };
 
         setMessages((prev) => [...prev, productsMessage]);
-        toast.success(`Found ${productResponse.data.products.length} gift suggestions!`);
+        toast.success(`Found ${productResponse.total_products} gift suggestions!`);
       } else {
-        toast.error("No products found for your request.");
+        toast.error("No products found for the recommendations.");
       }
     } catch (error) {
       console.error("Product search error:", error);
