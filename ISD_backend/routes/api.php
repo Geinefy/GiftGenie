@@ -6,7 +6,7 @@ use App\Http\Controllers\PostController;
 use Carbon\Carbon;
 
 Route::get('/ping', fn() => response()->json([
-    'ok' => true,
+    'ok' => false,
     'time' => Carbon::now('Asia/Dhaka')->toDateTimeString(),
 ], 200));
 

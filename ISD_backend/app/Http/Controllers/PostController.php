@@ -9,13 +9,13 @@ class PostController extends Controller
 {
     public function index()
     {
-        // 200 OK + latest() কাজ করবে যদি timestamps থাকে
+        // 200 OK + latest works if timestamps are enabled
         return response()->json(Post::latest()->get(), 200);
     }
 
     public function store(Request $request)
     {
-        // 422 হলে Laravel নিজে validation error JSON দেয়
+        // if 422 validation error, it will auto return with errors
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'body'  => 'required|string',
@@ -27,5 +27,5 @@ class PostController extends Controller
         return response()->json($post, 201);
     }
 
-    
+
 }

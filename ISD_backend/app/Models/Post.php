@@ -10,5 +10,5 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = ['title', 'body'];
-    // protected $guarded = []; // বিকল্প: সব ফিল্ড mass-assignable
+    // protected $guarded = []; // Alternative: all fields are mass-assignable
 }
