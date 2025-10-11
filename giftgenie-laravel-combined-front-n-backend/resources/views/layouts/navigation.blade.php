@@ -27,6 +27,9 @@
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                             {{ __('Dashboard') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('favorites')" :active="request()->routeIs('favorites')">
+                            {{ __('Favorites') }}
+                        </x-nav-link>
                     @endauth
                 </div>
             </div>
@@ -79,7 +82,7 @@
                 <a href="{{ route('register') }}" class="gg-primary-gradient text-white px-4 py-2 rounded-md text-sm font-medium">
                     {{ __('Register') }}
                 </a>
-                
+
             </div>
             @endguest
 
@@ -107,6 +110,9 @@
             @auth
                 <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                     {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('favorites')" :active="request()->routeIs('favorites')">
+                    {{ __('Favorites') }}
                 </x-responsive-nav-link>
             @endauth
         </div>

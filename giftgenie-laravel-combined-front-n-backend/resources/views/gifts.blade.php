@@ -126,7 +126,6 @@
                             <option value="">Any Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
-                            <option value="unisex">Unisex</option>
                         </select>
                     </div>
 
@@ -242,17 +241,41 @@
                                 <img src="{{ is_array($gift) ? $gift['image_url'] : $gift->image_url }}"
                                     alt="{{ is_array($gift) ? $gift['name'] : $gift->name }}" class="w-full h-48 object-cover">
 
-                                @if(isset($gift->id) && Auth::check())
-                                    <button onclick="toggleFavorite({{ $gift->id }})"
-                                            class="absolute top-2 right-2 p-2 bg-white bg-opacity-80 rounded-full shadow-md hover:bg-opacity-100 transition-all"
-                                            id="favorite-btn-{{ $gift->id }}">
-                                        <svg class="w-5 h-5 transition-colors {{ isset($gift->is_favorited) && $gift->is_favorited ? 'text-red-500 fill-current' : 'text-gray-400' }}"
-                                             viewBox="0 0 20 20">
-                                            <path d="M9.653 16.915l-.005-.003-.019-.01a15.256 15.256 0 01-.648-.373c-.38-.22-.89-.53-1.477-.903C6.045 14.48 4 12.84 4 10.5a4.5 4.5 0 019 0c0 2.34-2.045 3.98-3.504 5.126a15.247 15.247 0 01-2.124 1.286l-.019.01-.005.003h-.002a.5.5 0 01-.338 0c-.3-.92-.65-1.985-.92-3.11a8.707 8.707 0 00-.597-1.83M12 5.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                                                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                @auth
+                                    @php
+                                        $giftId = is_array($gift) ? ($gift['id'] ?? null) : $gift->id;
+                                        $isFavorited = is_array($gift) ? false : (isset($gift->is_favorited) && $gift->is_favorited);
+                                    @endphp
+                                    @if($giftId)
+                                        <button onclick="toggleAiFavorite({{ $giftId }})"
+                                                class="absolute top-3 right-3 p-2 bg-white bg-opacity-90 rounded-full shadow-lg hover:bg-opacity-100 hover:shadow-xl transition-all transform hover:scale-110"
+                                                id="favorite-btn-{{ $giftId }}"
+                                                title="{{ $isFavorited ? 'Remove from favorites' : 'Add to favorites' }}">
+                                            <svg class="w-6 h-6 transition-colors {{ $isFavorited ? 'text-red-500' : 'text-gray-400 hover:text-red-400' }}"
+                                                 fill="{{ $isFavorited ? 'currentColor' : 'none' }}"
+                                                 stroke="currentColor"
+                                                 viewBox="0 0 24 24"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      stroke-width="2"
+                                                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                            </svg>
+                                        </button>
+                                    @else
+                                        <!-- Debug: Show when no gift ID -->
+                                        <div class="absolute top-3 right-3 p-2 bg-yellow-100 rounded-full text-xs text-yellow-800">
+                                            No ID
+                                        </div>
+                                    @endif
+                                @else
+                                    <!-- Show login prompt for guests -->
+                                    <div class="absolute top-3 right-3 p-2 bg-blue-100 bg-opacity-90 rounded-full shadow-lg">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
-                                    </button>
-                                @endif
+                                    </div>
+                                @endauth
                             </div>
 
                             <div class="p-4">
@@ -306,40 +329,7 @@
                 @endif
             </div>
 
-            @if(!empty($gifts))
-                @foreach($gifts as $gift)
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow gift-card"
-                        data-price="{{ is_array($gift) ? $gift['price'] : $gift->price }}">
-                        <img src="{{ is_array($gift) ? $gift['image_url'] : $gift->image_url }}"
-                            alt="{{ is_array($gift) ? $gift['name'] : $gift->name }}" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="font-semibold text-lg mb-2">{{ is_array($gift) ? $gift['name'] : $gift->name }}</h3>
-                            <p class="text-gray-600 text-sm mb-3">
-                                {{ is_array($gift) ? $gift['description'] : $gift->description }}</p>
-                            <div class="flex justify-between items-center">
-                                <span
-                                    class="text-2xl font-bold text-blue-600">${{ number_format(is_array($gift) ? $gift['price'] : $gift->price, 2) }}</span>
-                                <a href="{{ is_array($gift) ? $gift['product_url'] : $gift->product_url }}"
-                                    class="gg-primary-gradient text-white px-4 py-2 rounded-md text-sm transition-colors">
-                                    View Details
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            @else
-                <div class="text-center py-12">
-                    <div class="mb-4">
-                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <h3 class="text-lg font-medium text-gray-500 mb-2">No gifts found yet</h3>
-                        <p class="text-gray-400">Use the AI prompt above to get personalized gift suggestions!</p>
-                    </div>
-                </div>
-            @endif
+
         </div>
     </div>
 
@@ -495,12 +485,18 @@
         document.head.appendChild(style);
 
         // Toggle favorite function
-        function toggleFavorite(giftId) {
+        function toggleAiFavorite(giftId) {
             const button = document.getElementById(`favorite-btn-${giftId}`);
+            if (!button) {
+                console.error('Favorite button not found for gift ID:', giftId);
+                return;
+            }
+
             const heartIcon = button.querySelector('svg');
 
             // Show loading state
             button.disabled = true;
+            button.style.opacity = '0.6';
 
             fetch(`/toggle-favorite/${giftId}`, {
                 method: 'POST',
@@ -513,25 +509,70 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Toggle heart appearance
+                    // Update heart appearance with better styling
                     if (data.is_favorited) {
-                        heartIcon.classList.add('text-red-500', 'fill-current');
-                        heartIcon.classList.remove('text-gray-400');
+                        heartIcon.classList.remove('text-gray-400', 'hover:text-red-400');
+                        heartIcon.classList.add('text-red-500');
+                        heartIcon.setAttribute('fill', 'currentColor');
+                        button.setAttribute('title', 'Remove from favorites');
+
+                        // Add a subtle animation
+                        button.style.transform = 'scale(1.2)';
+                        setTimeout(() => {
+                            button.style.transform = 'scale(1)';
+                        }, 200);
+
                     } else {
-                        heartIcon.classList.remove('text-red-500', 'fill-current');
-                        heartIcon.classList.add('text-gray-400');
+                        heartIcon.classList.remove('text-red-500');
+                        heartIcon.classList.add('text-gray-400', 'hover:text-red-400');
+                        heartIcon.setAttribute('fill', 'none');
+                        button.setAttribute('title', 'Add to favorites');
                     }
+
+                    // Show success message
+                    showToast(data.message, 'success');
+
                 } else {
-                    alert('Failed to update favorite status');
+                    showToast(data.message || 'Failed to update favorite status', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to update favorite status');
+                showToast('Failed to update favorite status. Please try again.', 'error');
             })
             .finally(() => {
                 button.disabled = false;
+                button.style.opacity = '1';
             });
+        }
+
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('.toast-notification');
+            existingToasts.forEach(toast => toast.remove());
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = `toast-notification fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 shadow-lg transform transition-all duration-300 ${
+                type === 'success' ? 'bg-green-500' :
+                type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            }`;
+            toast.style.transform = 'translateX(100%)';
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            // Animate in
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 10);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
 
         // Make toggleFavorite globally available

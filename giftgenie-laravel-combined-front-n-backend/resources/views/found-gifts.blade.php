@@ -15,7 +15,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             <!-- AI Response Section -->
             @if(isset($aiResponse['response']))
                 <div class="bg-blue-50 border-l-4 border-blue-400 p-6 mb-8 rounded-lg">
@@ -38,7 +38,7 @@
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
                     <div class="flex flex-wrap items-center space-x-4">
                         <h3 class="font-medium text-gray-900">Filter & Sort:</h3>
-                        
+
                         <!-- Budget Filter -->
                         <select id="budgetFilter" class="rounded-md border-gray-300 text-sm">
                             <option value="">All Budgets</option>
@@ -80,29 +80,42 @@
                         <div class="gift-card bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
                              data-price="{{ $gift->price }}"
                              data-name="{{ strtolower($gift->name) }}">
-                            
+
                             <!-- Gift Image with Favorite Button -->
                             <div class="relative">
                                 <img src="{{ $gift->image_url ?? 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500' }}"
                                      alt="{{ $gift->name }}" class="w-full h-48 object-cover">
-                                
-                                @if(Auth::check())
-                                    <button onclick="toggleFavorite({{ $gift->id }})" 
-                                            class="absolute top-2 right-2 p-2 bg-white bg-opacity-80 rounded-full shadow-md hover:bg-opacity-100 transition-all"
-                                            id="favorite-btn-{{ $gift->id }}">
-                                        <svg class="w-5 h-5 transition-colors {{ $gift->is_favorited ? 'text-red-500 fill-current' : 'text-gray-400' }}" 
-                                             viewBox="0 0 20 20">
-                                            <path d="M9.653 16.915l-.005-.003-.019-.01a15.256 15.256 0 01-.648-.373c-.38-.22-.89-.53-1.477-.903C6.045 14.48 4 12.84 4 10.5a4.5 4.5 0 019 0c0 2.34-2.045 3.98-3.504 5.126a15.247 15.247 0 01-2.124 1.286l-.019.01-.005.003h-.002a.5.5 0 01-.338 0z" 
-                                                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+                                @auth
+                                    <button onclick="toggleAiFavorite({{ $gift->id }})"
+                                            class="absolute top-3 right-3 p-2 bg-white bg-opacity-90 rounded-full shadow-lg hover:bg-opacity-100 hover:shadow-xl transition-all transform hover:scale-110"
+                                            id="favorite-btn-{{ $gift->id }}"
+                                            title="{{ $gift->is_favorited ? 'Remove from favorites' : 'Add to favorites' }}">
+                                        <svg class="w-6 h-6 transition-colors {{ $gift->is_favorited ? 'text-red-500' : 'text-gray-400 hover:text-red-400' }}"
+                                             fill="{{ $gift->is_favorited ? 'currentColor' : 'none' }}"
+                                             stroke="currentColor"
+                                             viewBox="0 0 24 24"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  stroke-width="2"
+                                                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                         </svg>
                                     </button>
-                                @endif
+                                @else
+                                    <!-- Show login prompt for guests -->
+                                    <div class="absolute top-3 right-3 p-2 bg-blue-100 bg-opacity-90 rounded-full shadow-lg">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                    </div>
+                                @endauth
                             </div>
 
                             <div class="p-4">
                                 <h3 class="font-semibold text-lg mb-2">{{ $gift->name }}</h3>
                                 <p class="text-gray-600 text-sm mb-3">{{ \Illuminate\Support\Str::limit($gift->description, 100) }}</p>
-                                
+
                                 <!-- Gift Metadata -->
                                 @if($gift->metadata && is_array($gift->metadata))
                                     <div class="flex items-center gap-2 mb-3 text-xs text-gray-500">
@@ -124,7 +137,7 @@
                                 <div class="flex items-center justify-between">
                                     <div class="text-2xl font-bold text-blue-600">${{ number_format($gift->price, 2) }}</div>
                                     @if($gift->product_url && $gift->product_url !== '#')
-                                        <a href="{{ $gift->product_url }}" target="_blank" 
+                                        <a href="{{ $gift->product_url }}" target="_blank"
                                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                                             View Product
                                         </a>
@@ -170,7 +183,7 @@
                         Dashboard
                     </a>
                 </div>
-                
+
                 @if(isset($gifts) && count($gifts) > 0)
                     <div class="text-sm text-gray-500">
                         Total Budget: ${{ number_format($totalBudget ?? 0, 2) }}
@@ -244,12 +257,19 @@
         }
 
         // Toggle favorite function
-        function toggleFavorite(giftId) {
+        function toggleAiFavorite(giftId) {
             const button = document.getElementById(`favorite-btn-${giftId}`);
+            if (!button) {
+                console.error('Favorite button not found for gift ID:', giftId);
+                return;
+            }
+
             const heartIcon = button.querySelector('svg');
-            
+
+            // Show loading state
             button.disabled = true;
-            
+            button.style.opacity = '0.6';
+
             fetch(`/toggle-favorite/${giftId}`, {
                 method: 'POST',
                 headers: {
@@ -261,24 +281,72 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    // Update heart appearance with better styling
                     if (data.is_favorited) {
-                        heartIcon.classList.add('text-red-500', 'fill-current');
-                        heartIcon.classList.remove('text-gray-400');
+                        heartIcon.classList.remove('text-gray-400', 'hover:text-red-400');
+                        heartIcon.classList.add('text-red-500');
+                        heartIcon.setAttribute('fill', 'currentColor');
+                        button.setAttribute('title', 'Remove from favorites');
+
+                        // Add a subtle animation
+                        button.style.transform = 'scale(1.2)';
+                        setTimeout(() => {
+                            button.style.transform = 'scale(1)';
+                        }, 200);
+
                     } else {
-                        heartIcon.classList.remove('text-red-500', 'fill-current');
-                        heartIcon.classList.add('text-gray-400');
+                        heartIcon.classList.remove('text-red-500');
+                        heartIcon.classList.add('text-gray-400', 'hover:text-red-400');
+                        heartIcon.setAttribute('fill', 'none');
+                        button.setAttribute('title', 'Add to favorites');
                     }
+
+                    // Show success message
+                    showToast(data.message, 'success');
+
                 } else {
-                    alert('Failed to update favorite status');
+                    showToast(data.message || 'Failed to update favorite status', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to update favorite status');
+                showToast('Failed to update favorite status. Please try again.', 'error');
             })
             .finally(() => {
                 button.disabled = false;
+                button.style.opacity = '1';
             });
         }
+
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('.toast-notification');
+            existingToasts.forEach(toast => toast.remove());
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = `toast-notification fixed top-4 right-4 px-6 py-3 rounded-lg text-white z-50 shadow-lg transform transition-all duration-300 ${
+                type === 'success' ? 'bg-green-500' :
+                type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            }`;
+            toast.style.transform = 'translateX(100%)';
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            // Animate in
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 10);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+
     </script>
 </x-app-layout>

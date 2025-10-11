@@ -252,30 +252,161 @@ class AiGiftController extends Controller
         ]);
     }
 
-    public function toggleFavorite(Request $request)
+    public function toggleFavorite(Request $request, $gift)
     {
-        $request->validate([
-            'gift_id' => 'required|exists:ai_generated_gifts,id'
-        ]);
-
         try {
-            $gift = AiGeneratedGift::findOrFail($request->gift_id);
-            $gift->toggleFavorite();
+            if (!Auth::check()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please login to save favorites'
+                ], 401);
+            }
+
+            // Check if this is a mock gift (string ID like "1", "2", etc.)
+            if (is_numeric($gift) && intval($gift) <= 10) {
+                return $this->handleMockGiftFavorite($gift);
+            }
+
+            $giftModel = AiGeneratedGift::findOrFail($gift);
+
+            // Ensure the gift belongs to the current user's sessions
+            $userOwnsGift = $giftModel->chatSession->user_id === Auth::id();
+            if (!$userOwnsGift) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
+            $giftModel->toggleFavorite();
 
             return response()->json([
                 'success' => true,
-                'is_favorited' => $gift->is_favorited,
-                'message' => $gift->is_favorited ? 'Added to favorites' : 'Removed from favorites'
+                'is_favorited' => $giftModel->is_favorited,
+                'message' => $giftModel->is_favorited ? 'Added to favorites' : 'Removed from favorites'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to toggle favorite'
+                'message' => 'Failed to toggle favorite: ' . $e->getMessage()
             ], 500);
         }
     }
 
-    public function getDashboardStats()
+    private function handleMockGiftFavorite($mockId)
+    {
+        // Define mock gift data
+        $mockGifts = [
+            '1' => [
+                'name' => 'Wireless Noise-Cancelling Headphones',
+                'price' => 299.99,
+                'image_url' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
+                'product_url' => '#',
+                'description' => 'Premium audio quality with active noise cancellation',
+                'source' => 'mock_data'
+            ],
+            '2' => [
+                'name' => 'Smartwatch Fitness Tracker',
+                'price' => 249.99,
+                'image_url' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500',
+                'product_url' => '#',
+                'description' => 'Track your health and stay connected',
+                'source' => 'mock_data'
+            ],
+            '3' => [
+                'name' => 'Artisan Coffee Gift Set',
+                'price' => 49.99,
+                'image_url' => 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=500',
+                'product_url' => '#',
+                'description' => 'Curated selection of world-class beans',
+                'source' => 'mock_data'
+            ],
+            '4' => [
+                'name' => 'Leather Messenger Bag',
+                'price' => 189.99,
+                'image_url' => 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500',
+                'product_url' => '#',
+                'description' => 'Handcrafted genuine leather bag',
+                'source' => 'mock_data'
+            ],
+            '5' => [
+                'name' => 'Portable Bluetooth Speaker',
+                'price' => 129.99,
+                'image_url' => 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500',
+                'product_url' => '#',
+                'description' => 'Crystal clear sound, anywhere you go',
+                'source' => 'mock_data'
+            ],
+            '6' => [
+                'name' => 'Gourmet Chocolate Box',
+                'price' => 39.99,
+                'image_url' => 'https://images.unsplash.com/photo-1511381939415-e44015466834?w=500',
+                'product_url' => '#',
+                'description' => 'Premium handcrafted chocolates',
+                'source' => 'mock_data'
+            ]
+        ];
+
+        if (!isset($mockGifts[$mockId])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gift not found'
+            ], 404);
+        }
+
+        $mockGiftData = $mockGifts[$mockId];
+
+        // Check if we already have this gift in the database
+        $existingGift = AiGeneratedGift::whereHas('chatSession', function($query) {
+            $query->where('user_id', Auth::id());
+        })->where('name', $mockGiftData['name'])
+          ->where('price', $mockGiftData['price'])
+          ->first();
+
+        if ($existingGift) {
+            $existingGift->toggleFavorite();
+            return response()->json([
+                'success' => true,
+                'is_favorited' => $existingGift->is_favorited,
+                'message' => $existingGift->is_favorited ? 'Added to favorites' : 'Removed from favorites'
+            ]);
+        }
+
+        // Create or get a mock session for this user
+        $mockSession = ChatSession::where('user_id', Auth::id())
+                                 ->where('initial_prompt', 'MOCK_GIFTS_SESSION')
+                                 ->first();
+
+        if (!$mockSession) {
+            $mockSession = ChatSession::create([
+                'user_id' => Auth::id(),
+                'session_uuid' => 'mock-' . uniqid(),
+                'initial_prompt' => 'MOCK_GIFTS_SESSION',
+                'context' => ['type' => 'mock_gifts'],
+                'status' => 'completed'
+            ]);
+        }
+
+        // Create the gift in the database
+        $gift = AiGeneratedGift::create([
+            'chat_session_id' => $mockSession->id,
+            'name' => $mockGiftData['name'],
+            'description' => $mockGiftData['description'],
+            'price' => $mockGiftData['price'],
+            'image_url' => $mockGiftData['image_url'],
+            'product_url' => $mockGiftData['product_url'],
+            'source' => $mockGiftData['source'],
+            'metadata' => ['category' => 'mock', 'mock_id' => $mockId],
+            'is_favorited' => true // Set as favorited since user clicked the button
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'is_favorited' => true,
+            'message' => 'Added to favorites',
+            'gift_id' => $gift->id
+        ]);
+    }    public function getDashboardStats()
     {
         $userId = Auth::id();
 
@@ -315,11 +446,36 @@ class AiGiftController extends Controller
 
     public function getFavoriteGifts()
     {
-        return AiGeneratedGift::whereHas('chatSession', function($query) {
+        if (!Auth::check()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $favorites = AiGeneratedGift::whereHas('chatSession', function($query) {
             $query->where('user_id', Auth::id());
         })->where('is_favorited', true)
-        ->orderBy('created_at', 'desc')
+        ->orderBy('updated_at', 'desc')
         ->get();
+
+        return response()->json([
+            'success' => true,
+            'favorites' => $favorites,
+            'count' => $favorites->count()
+        ]);
+    }
+
+    public function showFavorites()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $favorites = AiGeneratedGift::whereHas('chatSession', function($query) {
+            $query->where('user_id', Auth::id());
+        })->where('is_favorited', true)
+        ->orderBy('updated_at', 'desc')
+        ->get();
+
+        return view('favorites', compact('favorites'));
     }
 
     private function buildEnhancedPrompt(array $data)

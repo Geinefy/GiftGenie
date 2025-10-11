@@ -28,6 +28,8 @@ Route::delete('/api/favorites', [GiftSuggestionController::class, 'clearFavorite
 Route::middleware('auth')->group(function () {
     Route::get('/gifts', [GiftsController::class, 'index'])->name('gifts');
     Route::get('/dashboard', [AiGiftController::class, 'getDashboardStats'])->name('dashboard');
+    Route::get('/favorites', [AiGiftController::class, 'showFavorites'])->name('favorites');
+    Route::get('/api/my-favorites', [AiGiftController::class, 'getFavoriteGifts'])->name('api.my-favorites');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

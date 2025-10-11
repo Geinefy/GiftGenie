@@ -38,11 +38,12 @@
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-lg shadow-md">
+                <a href="{{ route('favorites') }}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow block">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Saved Items</p>
                             <p class="text-3xl font-bold text-gray-900">{{ $stats['saved_items'] ?? 0 }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Click to view favorites</p>
                         </div>
                         <div class="bg-purple-100 p-3 rounded-full">
                             <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,7 +53,7 @@
                             </svg>
                         </div>
                     </div>
-                </div>
+                </a>
 
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="flex items-center justify-between">
@@ -103,7 +104,7 @@
                                 <div class="flex items-center space-x-2">
                                     <span class="text-blue-600 text-sm">{{ $session->gifts_found ?? 0 }} results</span>
                                     @if(($session->gifts_found ?? 0) > 0)
-                                        <a href="{{ route('found.gifts') }}?session={{ $session->session_uuid }}" 
+                                        <a href="{{ route('found.gifts') }}?session={{ $session->session_uuid }}"
                                            class="inline-flex items-center px-2 py-1 text-xs bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition-colors">
                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -135,7 +136,7 @@
                                     <p class="font-medium">{{ \Illuminate\Support\Str::limit($gift->name, 30) }}</p>
                                     <p class="text-sm text-gray-600">${{ number_format($gift->price, 2) }}</p>
                                 </div>
-                                <button onclick="toggleFavorite({{ $gift->id }})" class="text-red-500 hover:text-red-700"
+                                <button onclick="toggleAiFavorite({{ $gift->id }})" class="text-red-500 hover:text-red-700"
                                     title="Remove from favorites">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path
@@ -157,7 +158,7 @@
 
     <script>
         // Toggle favorite function for dashboard
-        function toggleFavorite(giftId) {
+        function toggleAiFavorite(giftId) {
             fetch(`/toggle-favorite/${giftId}`, {
                 method: 'POST',
                 headers: {
