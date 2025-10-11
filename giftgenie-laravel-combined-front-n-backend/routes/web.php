@@ -1,0 +1,39 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\GiftsController;
+use App\Http\Controllers\GiftSuggestionController;
+use App\Http\Controllers\AiGiftController;
+use Illuminate\Support\Facades\Route;
+
+// Public routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// AI Gift Search routes
+Route::post('/search-gifts', [AiGiftController::class, 'searchGifts'])->name('ai.search.gifts');
+Route::get('/found-gifts', [AiGiftController::class, 'showFoundGifts'])->name('found.gifts');
+Route::post('/toggle-favorite/{gift}', [AiGiftController::class, 'toggleFavorite'])->name('ai.toggle.favorite');
+
+// Protected routes
+Route::middleware('auth')->group(function () {
+    Route::get('/gifts', [GiftsController::class, 'index'])->name('gifts');
+    Route::get('/dashboard', [AiGiftController::class, 'getDashboardStats'])->name('dashboard');
+    Route::get('/favorites', [AiGiftController::class, 'showFavorites'])->name('favorites');
+    Route::get('/api/my-favorites', [AiGiftController::class, 'getFavoriteGifts'])->name('api.my-favorites');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Gift Suggestion API routes - Protected
+    Route::post('/api/gift-suggestions', [GiftSuggestionController::class, 'getSuggestions'])->name('api.gift-suggestions');
+    Route::get('/api/search-history', [GiftSuggestionController::class, 'getSearchHistory'])->name('api.search-history');
+    Route::delete('/api/search-history', [GiftSuggestionController::class, 'clearHistory'])->name('api.clear-history');
+    Route::post('/api/favorites', [GiftSuggestionController::class, 'addToFavorites'])->name('api.add-favorite');
+    Route::delete('/api/favorites/{gift_id}', [GiftSuggestionController::class, 'removeFromFavorites'])->name('api.remove-favorite');
+    Route::get('/api/favorites', [GiftSuggestionController::class, 'getFavorites'])->name('api.get-favorites');
+    Route::delete('/api/favorites', [GiftSuggestionController::class, 'clearFavorites'])->name('api.clear-favorites');
+});
+
+// Authentication routes
+require __DIR__.'/auth.php';

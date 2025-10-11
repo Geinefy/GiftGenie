@@ -346,3 +346,371 @@ For issues and questions:
 ---
 
 **Happy Gift Finding! 🎁**
+# GiftGenie
+
+GiftGenie is a web application built with Laravel that helps users find perfect gift suggestions based on their preferences.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+- [PHP](https://www.php.net/) (>= 8.1)
+- [Composer](https://getcomposer.org/)
+- [Node.js](https://nodejs.org/) (>= 16.x)
+- [NPM](https://www.npmjs.com/)
+- [SQLite](https://www.sqlite.org/index.html)
+
+## Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/Geinefy/GiftGenie.git
+cd GiftGenie/giftgenie-laravel-combined-front-n-backend
+```
+
+2. Install PHP dependencies
+```bash
+composer install
+```
+
+3. Install Node.js dependencies
+```bash
+npm install
+```
+
+4. Create environment file
+```bash
+cp .env.example .env
+```
+
+5. Generate application key
+```bash
+php artisan key:generate
+```
+6. Create SQLite database
+```bash
+# For Linux
+touch database/database.sqlite
+
+# For Windows (PowerShell)
+New-Item -Path "database/database.sqlite" -ItemType "file" -Force
+
+# For Windows (Command Prompt)
+type nul > "database\database.sqlite"
+```
+
+7. Run database migrations and seeders
+```bash
+php artisan migrate
+php artisan db:seed
+```
+
+## Running the Application
+
+1. You can just run both frontend and backend using
+```bash
+composer run dev
+```
+
+### OR, you can run them separetly using the commands below
+
+1. Start the Laravel development server
+```bash
+php artisan serve
+```
+
+2. In a separate terminal, compile and watch for asset changes
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:8000`
+
+## Development Commands
+
+- Run tests
+```bash
+php artisan test
+```
+
+- Clear application cache
+```bash
+php artisan cache:clear
+```
+
+- Create a new controller
+```bash
+php artisan make:controller ControllerName
+```
+
+- Create a new model with migration
+```bash
+php artisan make:model ModelName -m
+```
+
+## Project Structure
+
+- `app/` - Contains the core code of your application
+  - `Http/Controllers/` - Controller classes
+  - `Models/` - Eloquent model classes
+  - `Providers/` - Service providers
+- `database/` - Database migrations and seeders
+- `public/` - Publicly accessible files
+- `resources/` - Views, raw assets (SASS, JS, etc)
+- `routes/` - Application routes
+- `tests/` - Application tests
+
+## Features
+
+- User Authentication
+- Gift Suggestions
+- Search History
+- Favorites Management
+- User Dashboard
+- Profile Management
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Additional Resources
+
+- [Laravel Documentation](https://laravel.com/docs)
+- [Laravel News](https://laravel-news.com/)
+- [Laracasts](https://laracasts.com/)
+- [Laravel Blade Templates](https://laravel.com/docs/blade)
+- [Laravel Eloquent](https://laravel.com/docs/eloquent)
+```
+
+## 🔧 Configuration
+
+### Python Backend Configuration
+
+Edit `ai-part/.env`:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+FLASK_ENV=development
+FLASK_DEBUG=True
+```
+
+Edit `ai-part/config.json` for advanced settings:
+
+```json
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 5000,
+    "debug": true
+  },
+  "scraping": {
+    "max_results_per_source": 3,
+    "timeout_seconds": 10,
+    "retry_attempts": 2
+  },
+  "ai": {
+    "max_questions": 4,
+    "max_recommendations": 6,
+    "temperature": 0.7
+  }
+}
+```
+
+### Frontend Configuration
+
+The frontend automatically connects to the Python API at `http://localhost:5000`.
+To change this, edit `frontend/src/services/giftService.ts`:
+
+```typescript
+const API_BASE_URL = "http://your-python-server:5000/api";
+```
+
+## 🌐 API Endpoints
+
+### Health Check
+
+```http
+GET /api/health
+```
+
+### Chat with AI
+
+```http
+POST /api/chat
+Content-Type: application/json
+
+{
+  "message": "I need a gift for my tech-savvy brother",
+  "context": "Previous conversation context",
+  "preferences": {"budget": "50-100"}
+}
+```
+
+### Search Products
+
+```http
+POST /api/search-products
+Content-Type: application/json
+
+{
+  "recommendations": {
+    "tech_gadgets": "wireless headphones",
+    "books": "programming books"
+  }
+}
+```
+
+### Generate Questions
+
+```http
+POST /api/generate-questions
+Content-Type: application/json
+
+{
+  "message": "I want to buy a gift",
+  "context": ""
+}
+```
+
+## 🧪 Testing
+
+### Test the Python API
+
+```bash
+cd ai-part
+python test_api.py
+```
+
+### Test the Frontend
+
+```bash
+cd frontend
+npm run build  # Test build
+npm run lint   # Check code quality
+```
+
+## 🛒 Supported Marketplaces
+
+Currently supported:
+
+- **Amazon**: Product search and details
+- **eBay**: Auction and Buy-It-Now items
+- **AliExpress**: International marketplace
+
+## 🤖 AI Capabilities
+
+The system uses Google Gemini AI to:
+
+- Understand user preferences and context
+- Generate relevant follow-up questions
+- Create structured gift recommendations
+- Provide friendly, conversational responses
+
+## 📱 User Experience Flow
+
+1. **User opens chat widget**
+2. **Describes gift recipient or occasion**
+3. **AI asks clarifying questions**
+4. **User provides additional details**
+5. **AI generates gift category recommendations**
+6. **System searches for actual products**
+7. **User sees product cards with images, prices, and links**
+8. **User can click to visit marketplace**
+
+## 🔮 Future Enhancements
+
+### Planned Features
+
+- **Laravel/Django Backend**: User accounts and chat history
+- **Advanced Filtering**: Price range, brand preferences
+- **Wishlist System**: Save favorite products
+- **Social Integration**: Share gift ideas
+- **Mobile App**: React Native mobile application
+- **More Marketplaces**: Etsy, Target, Walmart integration
+- **AI Improvements**: Better context understanding
+- **Analytics**: Track popular gifts and trends
+
+### Database Schema (Future)
+
+```sql
+-- Users table
+users: id, email, name, preferences, created_at
+
+-- Conversations table
+conversations: id, user_id, title, context, created_at
+
+-- Messages table
+messages: id, conversation_id, role, content, metadata
+
+-- Products table
+products: id, name, price, image_url, marketplace_url, source
+
+-- Recommendations table
+recommendations: id, conversation_id, category, products, created_at
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**"Failed to get response"**
+
+- Check if Python server is running on port 5000
+- Verify Gemini API key is set correctly
+- Check network connectivity
+
+**"No products found"**
+
+- Some marketplaces may block requests
+- Try different search terms
+- Check scraper logs for errors
+
+**CORS Issues**
+
+- Backend includes CORS headers
+- Check if frontend URL is correct
+
+**Rate Limiting**
+
+- Gemini API has rate limits
+- Add delays between requests if needed
+
+### Debug Mode
+
+Enable debug logging in Python:
+
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+```
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📞 Support
+
+For issues and questions:
+
+- Create a GitHub issue
+- Check the troubleshooting section
+- Review API documentation
+
+---
+
+**Happy Gift Finding! 🎁**
