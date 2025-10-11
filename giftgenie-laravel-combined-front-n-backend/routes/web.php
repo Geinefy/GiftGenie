@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/gifts', [GiftsController::class, 'index'])->name('gifts');
 
 // AI Gift Search routes
 Route::post('/search-gifts', [AiGiftController::class, 'searchGifts'])->name('ai.search.gifts');
@@ -27,6 +26,7 @@ Route::delete('/api/favorites', [GiftSuggestionController::class, 'clearFavorite
 
 // Protected routes
 Route::middleware('auth')->group(function () {
+    Route::get('/gifts', [GiftsController::class, 'index'])->name('gifts');
     Route::get('/dashboard', [AiGiftController::class, 'getDashboardStats'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
