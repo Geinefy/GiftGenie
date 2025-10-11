@@ -43,8 +43,10 @@
         @include('layouts.footer')
     </div>
 
-    <!-- Gift Suggestion Modal -->
-    @include('components.gift-suggestion-modal')
+    <!-- Gift Suggestion Modal - Only for authenticated users -->
+    @auth
+        @include('components.gift-suggestion-modal')
+    @endauth
 </body>
 
 </html>
