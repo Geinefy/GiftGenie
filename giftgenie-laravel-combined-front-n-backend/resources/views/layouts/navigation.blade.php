@@ -36,10 +36,15 @@
 
             <!-- Settings Dropdown -->
             @auth
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4">
+                <!-- Theme Toggle -->
+                <button id="themeToggle" title="Toggle theme" class="inline-flex items-center px-3 py-2 text-sm leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-transparent transition ease-in-out duration-150">
+                    <span id="themeIcon">☀️</span>
+                </button>
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
 
                             <div class="ms-1">
@@ -73,8 +78,8 @@
             <!-- Guest Links -->
             @guest
             <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-4">
-                <button id="themeToggle" title="Toggle theme" class="inline-flex items-center px-3 py-2 text-sm leading-4 font-medium rounded-md text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-transparent">
-                    <span id="themeIcon">☀️</span>
+                <button id="themeToggleGuest" title="Toggle theme" class="inline-flex items-center px-3 py-2 text-sm leading-4 font-medium rounded-md text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 bg-transparent transition ease-in-out duration-150">
+                    <span id="themeIconGuest">☀️</span>
                 </button>
                 <a href="{{ route('login') }}" class="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium">
                     {{ __('Login') }}
@@ -88,7 +93,7 @@
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 focus:text-gray-500 dark:focus:text-gray-200 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -119,13 +124,19 @@
 
         <!-- Responsive Settings Options -->
         @auth
-        <div class="pt-4 pb-1 border-t border-gray-200">
+        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-sm text-gray-500 dark:text-gray-400">{{ Auth::user()->email }}</div>
             </div>
 
             <div class="mt-3 space-y-1">
+                <!-- Theme Toggle for mobile -->
+                <button id="themeToggleMobile" class="w-full text-left px-4 py-2 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:text-gray-800 dark:focus:text-gray-100 focus:bg-gray-50 dark:focus:bg-gray-700 transition duration-150 ease-in-out flex items-center">
+                    <span id="themeIconMobile" class="mr-3">☀️</span>
+                    <span id="themeLabelMobile">Switch to Dark Mode</span>
+                </button>
+
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
@@ -146,8 +157,14 @@
 
         <!-- Responsive Guest Options -->
         @guest
-        <div class="pt-4 pb-1 border-t border-gray-200">
+        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700">
             <div class="mt-3 space-y-1">
+                <!-- Theme Toggle for mobile guests -->
+                <button id="themeToggleMobileGuest" class="w-full text-left px-4 py-2 text-base font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:text-gray-800 dark:focus:text-gray-100 focus:bg-gray-50 dark:focus:bg-gray-700 transition duration-150 ease-in-out flex items-center">
+                    <span id="themeIconMobileGuest" class="mr-3">☀️</span>
+                    <span id="themeLabelMobileGuest">Switch to Dark Mode</span>
+                </button>
+
                 <x-responsive-nav-link :href="route('login')">
                     {{ __('Login') }}
                 </x-responsive-nav-link>
@@ -163,20 +180,66 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const key = 'giftgenie:theme';
-        const toggle = document.getElementById('themeToggle');
-        const icon = document.getElementById('themeIcon');
+        
+        // Get all theme toggle elements
+        const toggles = [
+            document.getElementById('themeToggle'),
+            document.getElementById('themeToggleGuest'),
+            document.getElementById('themeToggleMobile'),
+            document.getElementById('themeToggleMobileGuest')
+        ];
+
+        const icons = [
+            document.getElementById('themeIcon'),
+            document.getElementById('themeIconGuest'),
+            document.getElementById('themeIconMobile'),
+            document.getElementById('themeIconMobileGuest')
+        ];
+
+        const labels = [
+            document.getElementById('themeLabelMobile'),
+            document.getElementById('themeLabelMobileGuest')
+        ];
+
+        function updateAllElements(theme) {
+            const isDark = theme === 'dark';
+            
+            // Update icons
+            icons.forEach(icon => {
+                if (icon) {
+                    icon.textContent = isDark ? '🌙' : '☀️';
+                }
+            });
+
+            // Update mobile labels
+            labels.forEach(label => {
+                if (label) {
+                    label.textContent = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+                }
+            });
+        }
 
         function applyTheme(theme) {
             if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
-                if (icon) icon.textContent = '🌙';
             } else {
                 document.documentElement.classList.remove('dark');
-                if (icon) icon.textContent = '☀️';
+            }
+            updateAllElements(theme);
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const newTheme = isDark ? 'light' : 'dark';
+            applyTheme(newTheme);
+            try { 
+                localStorage.setItem(key, newTheme); 
+            } catch (e) {
+                // ignore localStorage errors
             }
         }
 
-        // initialize
+        // Initialize theme
         try {
             const saved = localStorage.getItem(key);
             if (saved) {
@@ -186,15 +249,22 @@
                 applyTheme(prefersDark ? 'dark' : 'light');
             }
         } catch (e) {
-            // ignore
+            applyTheme('light'); // fallback
         }
 
-        if (toggle) {
-            toggle.addEventListener('click', function() {
-                const isDark = document.documentElement.classList.contains('dark');
-                const next = isDark ? 'light' : 'dark';
-                applyTheme(next);
-                try { localStorage.setItem(key, next); } catch (e) {}
+        // Add event listeners to all toggle buttons
+        toggles.forEach(toggle => {
+            if (toggle) {
+                toggle.addEventListener('click', toggleTheme);
+            }
+        });
+
+        // Listen for system theme changes
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (!localStorage.getItem(key)) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
             });
         }
     });

@@ -25,100 +25,151 @@
             <!-- Main Form Area -->
             <div class="flex-1 p-2 md:p-4">
                 <!-- Gift Suggestion Form -->
-                <form id="giftSuggestionForm" class="space-y-4">
+                <form id="giftSuggestionForm" class="space-y-6">
                     @csrf
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Recipient -->
-                        <div>
-                            <label for="recipient" class="block text-sm font-medium text-gray-700 mb-2">
-                                Who is this gift for?
-                            </label>
-                            <select id="recipient" name="recipient" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">Select recipient</option>
-                                <option value="friend">Friend</option>
-                                <option value="mother">Mother</option>
-                                <option value="father">Father</option>
-                                <option value="sibling">Sibling</option>
-                                <option value="colleague">Colleague</option>
-                                <option value="partner">Partner</option>
-                                <option value="couple">Couple</option>
-                            </select>
-                        </div>
-
-                        <!-- Occasion -->
-                        <div>
-                            <label for="occasion" class="block text-sm font-medium text-gray-700 mb-2">
-                                What's the occasion?
-                            </label>
-                            <select id="occasion" name="occasion" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">Select occasion</option>
-                                <option value="birthday">Birthday</option>
-                                <option value="graduation">Graduation</option>
-                                <option value="wedding">Wedding</option>
-                                <option value="mothers day">Mother's Day</option>
-                                <option value="fathers day">Father's Day</option>
-                                <option value="promotion">Promotion</option>
-                                <option value="work anniversary">Work Anniversary</option>
-                                <option value="thank you">Thank You</option>
-                                <option value="new year">New Year</option>
-                                <option value="festival">Festival</option>
-                            </select>
-                        </div>
-
-                        <!-- Budget Range -->
-                        <div>
-                            <label for="min_budget" class="block text-sm font-medium text-gray-700 mb-2">
-                                Minimum Budget ($)
-                            </label>
-                            <input type="number" id="min_budget" name="min_budget" min="0" step="0.01" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-
-                        <div>
-                            <label for="max_budget" class="block text-sm font-medium text-gray-700 mb-2">
-                                Maximum Budget ($)
-                            </label>
-                            <input type="number" id="max_budget" name="max_budget" min="0" step="0.01" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-
-                        <!-- Country -->
-                        <div class="md:col-span-2">
-                            <label for="country" class="block text-sm font-medium text-gray-700 mb-2">
-                                Country
-                            </label>
-                            <select id="country" name="country" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">Select country</option>
-                                <option value="Bangladesh">Bangladesh</option>
-                                <option value="USA">USA</option>
-                                <option value="UK">UK</option>
-                                <option value="India">India</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Australia">Australia</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Prompt / Custom Input for AI -->
-                        <div class="md:col-span-2">
-                            <label for="prompt" class="block text-sm font-medium text-gray-700 mb-2">
-                                Prompt / Gift details (optional)
-                            </label>
-                            <textarea id="prompt" name="prompt" rows="3" placeholder="Describe the recipient, preferences, or a specific prompt for AI-driven scraping later" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
+                    
+                    <!-- Large Text Input -->
+                    <div class="mb-6">
+                        <textarea id="aiPrompt" name="prompt"
+                            placeholder="Describe who you're shopping for... (e.g., 'My tech-savvy brother who loves gaming and gadgets, budget around $50-100')"
+                            class="w-full h-32 p-4 border-2 border-gray-200 rounded-xl resize-none text-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                            maxlength="500"></textarea>
+                        <div class="text-right mt-2">
+                            <span class="text-sm text-gray-400" id="charCount">0/500</span>
                         </div>
                     </div>
 
-                    <!-- Submit Button -->
-                    <div class="flex justify-center pt-4">
-                        <div class="flex gap-3">
-                            <button type="submit" id="searchBtn" class="gg-primary-gradient px-8 py-3 rounded-md font-medium transition-all duration-300">
-                            <span class="flex items-center">
+                    <!-- Find Gifts Button -->
+                    <div class="text-center mb-8">
+                        <button type="submit" id="searchBtn"
+                            class="gg-primary-gradient font-semibold px-12 py-4 rounded-xl text-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+                            <span class="flex items-center justify-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                                 Find Perfect Gifts
                             </span>
-                            </button>
+                        </button>
+                    </div>
 
-                            <!-- Save Chat / Favorite Chat Button -->
-                            <button type="button" id="saveChatBtn" title="Save this search/chat to Favorite Chats" class="bg-white border border-gray-300 text-gray-700 px-4 py-3 rounded-md hover:bg-gray-50 transition-all duration-200">
+                    <!-- Divider Line -->
+                    <div class="border-t border-gray-200 mb-6"></div>
+
+                    <!-- Additional Options Toggle -->
+                    <div class="text-center mb-6">
+                        <button type="button" id="toggleOptions"
+                            class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium flex items-center justify-center mx-auto transition-colors cursor-pointer">
+                            <span class="mr-2">Want to be more specific? Select from below options</span>
+                            <svg id="toggleIcon" class="w-5 h-5 transform transition-transform duration-200" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Collapsible Additional Options -->
+                    <div id="additionalOptions" class="hidden space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Budget Range -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Budget Range</label>
+                                <select name="budget"
+                                    class="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Any Budget</option>
+                                    <option value="0-25">Under $25</option>
+                                    <option value="25-50">$25 - $50</option>
+                                    <option value="50-100">$50 - $100</option>
+                                    <option value="100-200">$100 - $200</option>
+                                    <option value="200+">$200+</option>
+                                </select>
+                            </div>
+
+                            <!-- Occasion -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Occasion</label>
+                                <select name="occasion"
+                                    class="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Any Occasion</option>
+                                    <option value="birthday">Birthday</option>
+                                    <option value="anniversary">Anniversary</option>
+                                    <option value="wedding">Wedding</option>
+                                    <option value="graduation">Graduation</option>
+                                    <option value="christmas">Christmas</option>
+                                    <option value="valentine">Valentine's Day</option>
+                                    <option value="mother-day">Mother's Day</option>
+                                    <option value="father-day">Father's Day</option>
+                                </select>
+                            </div>
+
+                            <!-- Relationship -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Relationship</label>
+                                <select name="relationship"
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select Relationship</option>
+                                    <option value="spouse">Spouse/Partner</option>
+                                    <option value="parent">Parent</option>
+                                    <option value="sibling">Sibling</option>
+                                    <option value="child">Child</option>
+                                    <option value="friend">Friend</option>
+                                    <option value="colleague">Colleague</option>
+                                    <option value="boss">Boss</option>
+                                    <option value="teacher">Teacher</option>
+                                </select>
+                            </div>
+
+                            <!-- Age Range -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Age Range</label>
+                                <select name="age"
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Any Age</option>
+                                    <option value="0-5">0-5 years</option>
+                                    <option value="6-12">6-12 years</option>
+                                    <option value="13-17">13-17 years</option>
+                                    <option value="18-25">18-25 years</option>
+                                    <option value="26-35">26-35 years</option>
+                                    <option value="36-50">36-50 years</option>
+                                    <option value="51-65">51-65 years</option>
+                                    <option value="65+">65+ years</option>
+                                </select>
+                            </div>
+
+                            <!-- Gender -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Gender</label>
+                                <select name="gender"
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Any Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+
+                            <!-- Interests -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Interests</label>
+                                <select name="interests"
+                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select Interest</option>
+                                    <option value="technology">Technology</option>
+                                    <option value="sports">Sports & Fitness</option>
+                                    <option value="books">Books & Reading</option>
+                                    <option value="music">Music</option>
+                                    <option value="art">Art & Crafts</option>
+                                    <option value="cooking">Cooking</option>
+                                    <option value="travel">Travel</option>
+                                    <option value="fashion">Fashion</option>
+                                    <option value="gaming">Gaming</option>
+                                    <option value="gardening">Gardening</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Save Chat Button in Additional Options -->
+                        <div class="flex justify-center pt-4">
+                            <button type="button" id="saveChatBtn" title="Save this search/chat to Favorite Chats" class="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-all duration-200">
                                 <span class="flex items-center">
                                     <svg class="w-4 h-4 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.966a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.967c.3.922-.755 1.688-1.54 1.118L10 13.348l-3.952 2.874c-.784.57-1.84-.196-1.54-1.118l1.286-3.967a1 1 0 00-.364-1.118L2.05 9.393c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69L9.05 2.927z"/>
@@ -186,6 +237,50 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Define global functions first to prevent "not defined" errors
+    window.toggleFavorite = function(giftId) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (!csrfToken) {
+            console.error('CSRF token not found');
+            return;
+        }
+
+        fetch('/api/favorites', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ gift_id: giftId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Favorite toggled:', data);
+            // Reload favorites if we're in the favorites tab
+            if (document.getElementById('favoritesContainer')) {
+                loadFavorites();
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling favorite:', error);
+        });
+    };
+
+    window.removeFromFavorites = function(giftId) {
+        fetch(`/api/favorites/${giftId}`, { 
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            }
+        })
+        .then(() => {
+            if (document.getElementById('favoritesContainer')) {
+                loadFavorites();
+            }
+        })
+        .catch(error => console.error('Error removing from favorites:', error));
+    };
+    
     const modal = document.getElementById('giftSuggestionModal');
     const btn = document.getElementById('giftSuggestionBtn');
     const closeModal = document.getElementById('closeModal');
@@ -198,11 +293,81 @@ document.addEventListener('DOMContentLoaded', function() {
     const favoriteChatsContainer = document.getElementById('favoriteChatsContainer');
     const saveChatBtn = document.getElementById('saveChatBtn');
     const clearFavoriteChatsBtn = document.getElementById('clearFavoriteChatsBtn');
+    const aiPrompt = document.getElementById('aiPrompt');
+    const charCount = document.getElementById('charCount');
 
     const FAVORITE_CHATS_KEY = 'giftgenie:favoriteChats';
 
+    // Character count functionality
+    aiPrompt.addEventListener('input', function() {
+        const currentLength = this.value.length;
+        charCount.textContent = `${currentLength}/500`;
+        
+        // Change color if approaching limit
+        if (currentLength > 450) {
+            charCount.classList.add('text-red-500');
+        } else if (currentLength > 400) {
+            charCount.classList.add('text-yellow-500');
+        } else {
+            charCount.classList.remove('text-red-500', 'text-yellow-500');
+        }
+    });
+
+    // Simple direct toggle functionality - avoid complex setup
+    function initializeModalToggle() {
+        console.log('Initializing modal toggle...');
+        
+        // Use querySelector to be more specific and avoid conflicts
+        const modal = document.getElementById('giftSuggestionModal');
+        if (!modal) {
+            console.error('Modal not found');
+            return;
+        }
+        
+        const toggleBtn = modal.querySelector('#toggleOptions');
+        const additionalOpts = modal.querySelector('#additionalOptions');
+        const toggleIcn = modal.querySelector('#toggleIcon');
+        
+        console.log('Modal toggle elements:', {
+            toggleBtn: !!toggleBtn,
+            additionalOpts: !!additionalOpts,
+            toggleIcn: !!toggleIcn
+        });
+        
+        if (toggleBtn && additionalOpts && toggleIcn) {
+            // Remove any existing onclick
+            toggleBtn.onclick = null;
+            
+            // Add the click handler directly
+            toggleBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Modal toggle clicked');
+                const isHidden = additionalOpts.classList.contains('hidden');
+                
+                if (isHidden) {
+                    additionalOpts.classList.remove('hidden');
+                    toggleIcn.style.transform = 'rotate(180deg)';
+                    console.log('Modal options opened');
+                } else {
+                    additionalOpts.classList.add('hidden');
+                    toggleIcn.style.transform = 'rotate(0deg)';
+                    console.log('Modal options closed');
+                }
+            };
+            
+            console.log('Modal toggle initialized successfully');
+            return true;
+        } else {
+            console.error('Modal toggle elements not found');
+            return false;
+        }
+    }
+    
     // Open modal with subtle animation
     btn.onclick = function() {
+        console.log('Opening gift suggestion modal...');
         modal.classList.remove('hidden');
         const content = modal.querySelector('.relative');
         if (content) {
@@ -211,6 +376,12 @@ document.addEventListener('DOMContentLoaded', function() {
             void content.offsetWidth;
             content.classList.add('gg-modal-open');
         }
+        
+        // Initialize toggle immediately after modal is shown
+        setTimeout(() => {
+            initializeModalToggle();
+        }, 100);
+        
         loadHistory();
         loadFavorites();
         loadFavoriteChats();
@@ -523,25 +694,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadFavoriteChats();
     };
 
-    // Global functions for favorites
-    window.toggleFavorite = function(giftId) {
-        fetch('/api/favorites', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ gift_id: giftId })
-        })
-        .then(() => loadFavorites())
-        .catch(error => console.error('Error adding to favorites:', error));
-    };
-
-    window.removeFromFavorites = function(giftId) {
-        fetch(`/api/favorites/${giftId}`, { method: 'DELETE' })
-        .then(() => loadFavorites())
-        .catch(error => console.error('Error removing from favorites:', error));
-    };
+    // Global functions are now defined at the top of the script
 
     // small helper to escape HTML when injecting text
     function escapeHtml(unsafe) {

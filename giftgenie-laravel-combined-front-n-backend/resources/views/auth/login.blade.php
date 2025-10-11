@@ -34,7 +34,7 @@
 
         <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
+                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
@@ -46,9 +46,9 @@
 
         <!-- Register Link -->
         <div class="mt-6 text-center">
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
                 {{ __("Don't have an account?") }}
-                <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-500 underline">
+                <a href="{{ route('register') }}" class="font-medium text-accent-1 hover:text-accent-4 underline transition-colors duration-200">
                     {{ __('Register here') }}
                 </a>
             </p>
