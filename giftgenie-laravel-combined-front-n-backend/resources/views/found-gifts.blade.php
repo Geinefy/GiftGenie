@@ -77,18 +77,40 @@
             @if(isset($gifts) && count($gifts) > 0)
                 <div id="giftsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @foreach($gifts as $gift)
-                        <div class="gift-card bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
+                        <div class="gift-card group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
                              data-price="{{ $gift->price }}"
                              data-name="{{ strtolower($gift->name) }}">
 
-                            <!-- Gift Image with Favorite Button -->
+                            <!-- Animated Gift Box with Favorite Button -->
                             <div class="relative">
-                                <img src="{{ $gift->image_url ?? 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500' }}"
-                                     alt="{{ $gift->name }}" class="w-full h-48 object-cover">
+                                <div class="gift-box-container">
+                                    <!-- Sparkles for extra delight -->
+                                    <div class="gift-box-sparkles">
+                                        <div class="sparkle"></div>
+                                        <div class="sparkle"></div>
+                                        <div class="sparkle"></div>
+                                        <div class="sparkle"></div>
+                                    </div>
+                                    
+                                    <!-- Closed Gift Box (Base) -->
+                                    <div class="gift-box-base gift-box-pulse"
+                                         style="background-image: url('{{ asset('assets/gift-placeholder.jpeg') }}');">
+                                    </div>
+                                    
+                                    <!-- Opened Gift Box Lid (Shows on hover) -->
+                                    <div class="gift-box-lid"
+                                         style="background-image: url('{{ asset('assets/gift-placeholder-lid-open.png') }}');">
+                                    </div>
+
+                                    <!-- Gift Name Overlay (appears on hover) -->
+                                    <div class="absolute bottom-4 left-4 right-4 bg-black bg-opacity-50 text-white text-sm p-2 rounded transform translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                                        <p class="font-medium truncate">{{ $gift->name }}</p>
+                                    </div>
+                                </div>
 
                                 @auth
                                     <button onclick="toggleAiFavorite({{ $gift->id }})"
-                                            class="absolute top-3 right-3 p-2 bg-white bg-opacity-90 rounded-full shadow-lg hover:bg-opacity-100 hover:shadow-xl transition-all transform hover:scale-110"
+                                            class="absolute top-3 right-3 p-2 bg-white bg-opacity-90 rounded-full shadow-lg hover:bg-opacity-100 hover:shadow-xl transition-all transform hover:scale-110 z-10"
                                             id="favorite-btn-{{ $gift->id }}"
                                             title="{{ $gift->is_favorited ? 'Remove from favorites' : 'Add to favorites' }}">
                                         <svg class="w-6 h-6 transition-colors {{ $gift->is_favorited ? 'text-red-500' : 'text-gray-400 hover:text-red-400' }}"
@@ -104,7 +126,7 @@
                                     </button>
                                 @else
                                     <!-- Show login prompt for guests -->
-                                    <div class="absolute top-3 right-3 p-2 bg-blue-100 bg-opacity-90 rounded-full shadow-lg">
+                                    <div class="absolute top-3 right-3 p-2 bg-blue-100 bg-opacity-90 rounded-full shadow-lg z-10">
                                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>

@@ -129,13 +129,12 @@ class ProductScraper:
             # For demo purposes, we'll use a simplified approach
             # In production, you might want to use the Amazon API or more sophisticated scraping
 
-            # Sample Amazon-like data with better images
-            sample_images = self._get_sample_images(query)
+            # Sample Amazon-like data without images (using animated gift box instead)
             sample_products = [
                 {
                     "name": f"Amazon {query.title()} - Premium Quality",
                     "price": f"${random.randint(15, 200)}.{random.randint(10, 99)}",
-                    "image": sample_images[0],
+                    "image": "",  # Empty - will use animated gift box
                     "url": f"https://amazon.com/s?k={quote(query)}",
                     "source": "amazon",
                     "rating": round(random.uniform(3.5, 5.0), 1),
@@ -144,7 +143,7 @@ class ProductScraper:
                 {
                     "name": f"{query.title()} - Best Seller on Amazon",
                     "price": f"${random.randint(10, 150)}.{random.randint(10, 99)}",
-                    "image": sample_images[1],
+                    "image": "",  # Empty - will use animated gift box
                     "url": f"https://amazon.com/s?k={quote(query)}",
                     "source": "amazon",
                     "rating": round(random.uniform(4.0, 5.0), 1),
@@ -191,15 +190,8 @@ class ProductScraper:
                             title = title_elem.get_text(strip=True)
                             price = price_elem.get_text(strip=True)
 
-                            # Try multiple image attributes and fix URL issues
+                            # Use empty image - animated gift box will be displayed instead
                             image = ''
-                            if image_elem:
-                                image = (image_elem.get('src') or
-                                         image_elem.get('data-src') or
-                                         image_elem.get('data-original') or '')
-                                # Fix image URL if it's relative or has issues
-                                image = self._fix_image_url(image)
-
                             url = link_elem.get(
                                 'href', '') if link_elem else ''
 
@@ -235,11 +227,10 @@ class ProductScraper:
             # For demo purposes, using placeholder data
             # AliExpress requires more sophisticated scraping due to their anti-bot measures
 
-            sample_images = self._get_sample_images(query)
             sample_product = {
                 "name": f"{query.title()} - AliExpress Deal",
                 "price": f"${random.randint(5, 50)}.{random.randint(10, 99)}",
-                "image": sample_images[2] if len(sample_images) > 2 else sample_images[0],
+                "image": "",  # Empty - will use animated gift box
                 "url": f"https://www.aliexpress.com/wholesale?SearchText={quote(query)}",
                 "source": "aliexpress",
                 "shipping": "Free shipping"
@@ -318,58 +309,59 @@ class ProductScraper:
 
         return price_text
 
-    def _get_sample_images(self, query: str) -> List[str]:
-        """
-        Get sample product images based on query keywords
-        """
-        # Map common keywords to relevant stock images
-        keyword_images = {
-            'chocolate': [
-                'https://images.unsplash.com/photo-1511381939415-e44015466834?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=300&h=300&fit=crop'
-            ],
-            'headphones': [
-                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=300&h=300&fit=crop'
-            ],
-            'watch': [
-                'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?w=300&h=300&fit=crop'
-            ],
-            'coffee': [
-                'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=300&h=300&fit=crop'
-            ],
-            'book': [
-                'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop'
-            ],
-            'speaker': [
-                'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=300&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1507646227500-4d389b0012be?w=300&h=300&fit=crop'
-            ]
-        }
-
-        # Default fallback images
-        default_images = [
-            'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=300&fit=crop'
-        ]
-
-        # Find matching images based on query
-        query_lower = query.lower()
-        for keyword, images in keyword_images.items():
-            if keyword in query_lower:
-                return images
-
-        return default_images
+    # Commented out - using animated gift box instead of sample images
+    # def _get_sample_images(self, query: str) -> List[str]:
+    #     """
+    #     Get sample product images based on query keywords
+    #     """
+    #     # Map common keywords to relevant stock images
+    #     keyword_images = {
+    #         'chocolate': [
+    #             'https://images.unsplash.com/photo-1511381939415-e44015466834?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=300&h=300&fit=crop'
+    #         ],
+    #         'headphones': [
+    #             'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=300&h=300&fit=crop'
+    #         ],
+    #         'watch': [
+    #             'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1542496658-e33a6d0d50f6?w=300&h=300&fit=crop'
+    #         ],
+    #         'coffee': [
+    #             'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=300&h=300&fit=crop'
+    #         ],
+    #         'book': [
+    #             'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop'
+    #         ],
+    #         'speaker': [
+    #             'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=300&h=300&fit=crop',
+    #             'https://images.unsplash.com/photo-1507646227500-4d389b0012be?w=300&h=300&fit=crop'
+    #         ]
+    #     }
+    #
+    #     # Default fallback images
+    #     default_images = [
+    #         'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=300&fit=crop',
+    #         'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop',
+    #         'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=300&fit=crop'
+    #     ]
+    #
+    #     # Find matching images based on query
+    #     query_lower = query.lower()
+    #     for keyword, images in keyword_images.items():
+    #         if keyword in query_lower:
+    #             return images
+    #
+    #     return default_images
 
     def _fix_image_url(self, image_url: str) -> str:
         """
