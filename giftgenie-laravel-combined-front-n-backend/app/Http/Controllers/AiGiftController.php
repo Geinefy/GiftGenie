@@ -28,24 +28,27 @@ class AiGiftController extends Controller
         ]);
 
         try {
+            // Set PHP execution time limit to 180 seconds (3 minutes)
+            set_time_limit(180);
+
             // Generate session UUID
             $sessionUuid = Str::uuid()->toString();
-            
+
             // Build enhanced prompt
             $enhancedPrompt = $this->buildEnhancedPrompt($request->all());
-            
+
             // Create chat session
             $chatSession = ChatSession::create([
                 'user_id' => Auth::id(),
                 'session_uuid' => $sessionUuid,
                 'initial_prompt' => $request->prompt,
                 'context' => $request->except(['_token', 'prompt']),
-                'status' => 'active'
+                'status' => 'processing_ai'
             ]);
 
-            // Call AI service for chat
+            // Call AI service for chat with increased timeout
             try {
-                $aiResponse = Http::timeout(30)->post("{$this->aiServiceUrl}/api/chat", [
+                $aiResponse = Http::timeout(120)->post("{$this->aiServiceUrl}/api/chat", [
                     'message' => $enhancedPrompt,
                     'session_id' => $sessionUuid
                 ]);
@@ -58,7 +61,7 @@ class AiGiftController extends Controller
             } catch (\Exception $e) {
                 // Fallback to mock AI response when service is unavailable
                 Log::warning('AI service unavailable, using mock response: ' . $e->getMessage());
-                
+
                 $aiData = [
                     'response' => "I'd be happy to help you find the perfect gifts! Based on your preferences, here are some personalized recommendations:",
                     'recommendations' => [
@@ -69,18 +72,19 @@ class AiGiftController extends Controller
                     ]
                 ];
             }
-            
+
             // Update chat session with AI response
             $chatSession->update([
                 'ai_response' => $aiData,
+                'status' => 'searching_products'
             ]);
 
             // Search for products
             $gifts = [];
             $totalBudget = 0;
-            
+
             try {
-                $productsResponse = Http::timeout(30)->post("{$this->aiServiceUrl}/api/search-products", [
+                $productsResponse = Http::timeout(120)->post("{$this->aiServiceUrl}/api/search-products", [
                     'recommendations' => $aiData['recommendations'] ?? [],
                 ]);
 
@@ -92,59 +96,103 @@ class AiGiftController extends Controller
                 }
             } catch (\Exception $e) {
                 Log::warning('Products service unavailable, using mock data: ' . $e->getMessage());
-                
-                // Mock product data
-                $products = [
-                    'electronics' => [
-                        [
-                            'name' => 'Wireless Earbuds',
-                            'price' => 79.99,
-                            'description' => 'High-quality wireless earbuds with noise cancellation',
-                            'image_url' => 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=500',
-                            'product_url' => '#',
-                            'rating' => 4.5,
-                            'reviews' => 1200
-                        ],
-                    ],
-                    'lifestyle' => [
-                        [
-                            'name' => 'Essential Oil Diffuser',
-                            'price' => 45.99,
-                            'description' => 'Ultrasonic aromatherapy diffuser for home wellness',
-                            'image_url' => 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500',
-                            'product_url' => '#',
-                            'rating' => 4.7,
-                            'reviews' => 856
-                        ],
-                    ],
-                ];
+
+                // Generate more relevant mock data based on AI recommendations
+                $mockProducts = [];
+                if (isset($aiData['recommendations']) && is_array($aiData['recommendations'])) {
+                    foreach ($aiData['recommendations'] as $category => $keywords) {
+                        $mockProducts[$category] = [
+                            [
+                                'name' => 'Sample ' . ucfirst(str_replace('_', ' ', $category)) . ' Item',
+                                'price' => rand(20, 200) + 0.99,
+                                'description' => 'AI-recommended ' . $keywords . ' - sample product while service is unavailable',
+                                'image_url' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
+                                'product_url' => '#',
+                                'rating' => 4.0 + (rand(0, 10) / 10),
+                                'reviews' => rand(50, 500),
+                                'source' => 'mock_fallback'
+                            ]
+                        ];
+                    }
+                } else {
+                    // Default fallback
+                    $mockProducts = [
+                        'general_gifts' => [
+                            [
+                                'name' => 'Gift Card',
+                                'price' => 50.00,
+                                'description' => 'Universal gift card - perfect when you\'re unsure',
+                                'image_url' => 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500',
+                                'product_url' => '#',
+                                'rating' => 4.5,
+                                'reviews' => 100,
+                                'source' => 'mock_fallback'
+                            ]
+                        ]
+                    ];
+                }
+                $products = $mockProducts;
             }
-            
+
             if (isset($products) && $products) {
-                
-                // Save products to database
-                foreach ($products as $product) {
+
+                // Update status to saving products
+                $chatSession->update(['status' => 'saving_products']);
+
+                // Save products to database - handle categorized structure from AI API
+                $productsToSave = [];
+
+                if (is_array($products)) {
+                    // Handle categorized structure: {"electronics": [product1, product2], "lifestyle": [product3]}
+                    foreach ($products as $categoryName => $categoryProducts) {
+                        if (is_array($categoryProducts)) {
+                            // It's a category with products array
+                            foreach ($categoryProducts as $product) {
+                                if (is_array($product) && isset($product['name'])) {
+                                    // Add category info to product
+                                    $product['category'] = $categoryName;
+                                    $productsToSave[] = $product;
+                                }
+                            }
+                        } else if (is_array($categoryProducts) && isset($categoryProducts['name'])) {
+                            // It's a single product (shouldn't happen with current structure but handle anyway)
+                            $categoryProducts['category'] = $categoryName;
+                            $productsToSave[] = $categoryProducts;
+                        }
+                    }
+                }
+
+                Log::info('Products to save:', ['count' => count($productsToSave), 'structure' => array_keys($products)]);
+
+                foreach ($productsToSave as $product) {
                     $price = $this->extractPrice($product['price'] ?? '0');
                     $totalBudget += $price;
-                    
+
+                    Log::info('Creating gift:', [
+                        'name' => $product['name'] ?? 'Unknown',
+                        'price' => $price,
+                        'category' => $product['category'] ?? 'unknown'
+                    ]);
+
                     $gift = AiGeneratedGift::create([
                         'chat_session_id' => $chatSession->id,
                         'name' => $product['name'] ?? 'Unknown Gift',
                         'description' => $product['description'] ?? '',
                         'price' => $price,
-                        'image_url' => $product['image'] ?? '',
-                        'product_url' => $product['url'] ?? '#',
-                        'source' => $product['source'] ?? 'AI',
+                        'image_url' => $product['image_url'] ?? $product['image'] ?? '',
+                        'product_url' => $product['product_url'] ?? $product['url'] ?? '#',
+                        'source' => $product['source'] ?? 'AI_API',
                         'metadata' => [
+                            'category' => $product['category'] ?? 'unknown',
                             'rating' => $product['rating'] ?? null,
                             'reviews' => $product['reviews'] ?? null,
                             'shipping' => $product['shipping'] ?? null,
                         ]
                     ]);
-                    
+
                     $gifts[] = $gift;
                 }
-                
+
                 // Update session with results
                 $chatSession->update([
                     'gifts_found' => count($gifts),
@@ -175,21 +223,21 @@ class AiGiftController extends Controller
     public function showFoundGifts(Request $request)
     {
         $sessionId = $request->get('session');
-        
+
         if (!$sessionId) {
             return redirect()->route('gifts')->with('error', 'No search session found.');
         }
 
         // Get the chat session
         $chatSession = ChatSession::where('session_uuid', $sessionId)->first();
-        
+
         if (!$chatSession) {
             return redirect()->route('gifts')->with('error', 'Search session not found.');
         }
 
         // Get gifts from this session
         $gifts = $chatSession->aiGeneratedGifts;
-        
+
         // Calculate total budget
         $totalBudget = $gifts->sum('price');
         $totalFound = $gifts->count();
@@ -213,7 +261,7 @@ class AiGiftController extends Controller
         try {
             $gift = AiGeneratedGift::findOrFail($request->gift_id);
             $gift->toggleFavorite();
-            
+
             return response()->json([
                 'success' => true,
                 'is_favorited' => $gift->is_favorited,
@@ -230,7 +278,7 @@ class AiGiftController extends Controller
     public function getDashboardStats()
     {
         $userId = Auth::id();
-        
+
         $stats = [
             'gifts_found' => ChatSession::where('user_id', $userId)->sum('gifts_found'),
             'saved_items' => AiGeneratedGift::whereHas('chatSession', function($query) use ($userId) {
@@ -239,7 +287,7 @@ class AiGiftController extends Controller
             'chat_sessions' => ChatSession::where('user_id', $userId)->count(),
             'budget_saved' => ChatSession::where('user_id', $userId)->sum('total_budget_shown')
         ];
-        
+
         // Get recent sessions for display
         $recentSessions = ChatSession::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
@@ -253,7 +301,7 @@ class AiGiftController extends Controller
             ->orderBy('updated_at', 'desc')
             ->limit(6)
             ->get();
-        
+
         return view('dashboard', compact('stats', 'recentSessions', 'recentFavorites'));
     }
 
@@ -277,14 +325,14 @@ class AiGiftController extends Controller
     private function buildEnhancedPrompt(array $data)
     {
         $prompt = $data['prompt'];
-        
+
         if (!empty($data['budget'])) $prompt .= " Budget: {$data['budget']}.";
         if (!empty($data['occasion'])) $prompt .= " Occasion: {$data['occasion']}.";
         if (!empty($data['relationship'])) $prompt .= " Relationship: {$data['relationship']}.";
         if (!empty($data['age'])) $prompt .= " Age: {$data['age']}.";
         if (!empty($data['gender'])) $prompt .= " Gender: {$data['gender']}.";
         if (!empty($data['interests'])) $prompt .= " Interests: {$data['interests']}.";
-        
+
         return $prompt;
     }
 
@@ -297,28 +345,28 @@ class AiGiftController extends Controller
     private function extractMinBudget($budgetString)
     {
         if (empty($budgetString)) return null;
-        
+
         if (strpos($budgetString, '-') !== false) {
             $parts = explode('-', $budgetString);
             return (float) $parts[0];
         }
-        
+
         return null;
     }
 
     private function extractMaxBudget($budgetString)
     {
         if (empty($budgetString)) return null;
-        
+
         if (strpos($budgetString, '-') !== false) {
             $parts = explode('-', $budgetString);
             return (float) ($parts[1] ?? $parts[0]);
         }
-        
+
         if (strpos($budgetString, '+') !== false) {
             return 999999; // Represent unlimited budget
         }
-        
+
         return null;
     }
 }
