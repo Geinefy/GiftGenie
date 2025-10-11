@@ -59,7 +59,7 @@
                     <!-- Additional Options Toggle -->
                     <div class="text-center mb-6">
                         <button type="button" id="toggleOptions"
-                            class="text-gray-600 hover:text-gray-800 font-medium flex items-center justify-center mx-auto transition-colors">
+                            class="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 font-medium flex items-center justify-center mx-auto transition-colors cursor-pointer">
                             <span class="mr-2">Want to be more specific? Select from below options</span>
                             <svg id="toggleIcon" class="w-5 h-5 transform transition-transform duration-200" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
@@ -73,9 +73,9 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <!-- Budget Range -->
                             <div class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700">Budget Range</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Budget Range</label>
                                 <select name="budget"
-                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    class="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Any Budget</option>
                                     <option value="0-25">Under $25</option>
                                     <option value="25-50">$25 - $50</option>
@@ -87,9 +87,9 @@
 
                             <!-- Occasion -->
                             <div class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700">Occasion</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Occasion</label>
                                 <select name="occasion"
-                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    class="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Any Occasion</option>
                                     <option value="birthday">Birthday</option>
                                     <option value="anniversary">Anniversary</option>
@@ -237,6 +237,50 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Define global functions first to prevent "not defined" errors
+    window.toggleFavorite = function(giftId) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (!csrfToken) {
+            console.error('CSRF token not found');
+            return;
+        }
+
+        fetch('/api/favorites', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ gift_id: giftId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Favorite toggled:', data);
+            // Reload favorites if we're in the favorites tab
+            if (document.getElementById('favoritesContainer')) {
+                loadFavorites();
+            }
+        })
+        .catch(error => {
+            console.error('Error toggling favorite:', error);
+        });
+    };
+
+    window.removeFromFavorites = function(giftId) {
+        fetch(`/api/favorites/${giftId}`, { 
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            }
+        })
+        .then(() => {
+            if (document.getElementById('favoritesContainer')) {
+                loadFavorites();
+            }
+        })
+        .catch(error => console.error('Error removing from favorites:', error));
+    };
+    
     const modal = document.getElementById('giftSuggestionModal');
     const btn = document.getElementById('giftSuggestionBtn');
     const closeModal = document.getElementById('closeModal');
@@ -251,9 +295,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearFavoriteChatsBtn = document.getElementById('clearFavoriteChatsBtn');
     const aiPrompt = document.getElementById('aiPrompt');
     const charCount = document.getElementById('charCount');
-    const toggleOptions = document.getElementById('toggleOptions');
-    const toggleIcon = document.getElementById('toggleIcon');
-    const additionalOptions = document.getElementById('additionalOptions');
 
     const FAVORITE_CHATS_KEY = 'giftgenie:favoriteChats';
 
@@ -272,21 +313,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Toggle additional options functionality
-    toggleOptions.addEventListener('click', function() {
-        const isHidden = additionalOptions.classList.contains('hidden');
+    // Simple direct toggle functionality - avoid complex setup
+    function initializeModalToggle() {
+        console.log('Initializing modal toggle...');
         
-        if (isHidden) {
-            additionalOptions.classList.remove('hidden');
-            toggleIcon.style.transform = 'rotate(180deg)';
-        } else {
-            additionalOptions.classList.add('hidden');
-            toggleIcon.style.transform = 'rotate(0deg)';
+        // Use querySelector to be more specific and avoid conflicts
+        const modal = document.getElementById('giftSuggestionModal');
+        if (!modal) {
+            console.error('Modal not found');
+            return;
         }
-    });
-
+        
+        const toggleBtn = modal.querySelector('#toggleOptions');
+        const additionalOpts = modal.querySelector('#additionalOptions');
+        const toggleIcn = modal.querySelector('#toggleIcon');
+        
+        console.log('Modal toggle elements:', {
+            toggleBtn: !!toggleBtn,
+            additionalOpts: !!additionalOpts,
+            toggleIcn: !!toggleIcn
+        });
+        
+        if (toggleBtn && additionalOpts && toggleIcn) {
+            // Remove any existing onclick
+            toggleBtn.onclick = null;
+            
+            // Add the click handler directly
+            toggleBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Modal toggle clicked');
+                const isHidden = additionalOpts.classList.contains('hidden');
+                
+                if (isHidden) {
+                    additionalOpts.classList.remove('hidden');
+                    toggleIcn.style.transform = 'rotate(180deg)';
+                    console.log('Modal options opened');
+                } else {
+                    additionalOpts.classList.add('hidden');
+                    toggleIcn.style.transform = 'rotate(0deg)';
+                    console.log('Modal options closed');
+                }
+            };
+            
+            console.log('Modal toggle initialized successfully');
+            return true;
+        } else {
+            console.error('Modal toggle elements not found');
+            return false;
+        }
+    }
+    
     // Open modal with subtle animation
     btn.onclick = function() {
+        console.log('Opening gift suggestion modal...');
         modal.classList.remove('hidden');
         const content = modal.querySelector('.relative');
         if (content) {
@@ -295,6 +376,12 @@ document.addEventListener('DOMContentLoaded', function() {
             void content.offsetWidth;
             content.classList.add('gg-modal-open');
         }
+        
+        // Initialize toggle immediately after modal is shown
+        setTimeout(() => {
+            initializeModalToggle();
+        }, 100);
+        
         loadHistory();
         loadFavorites();
         loadFavoriteChats();
@@ -607,25 +694,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadFavoriteChats();
     };
 
-    // Global functions for favorites
-    window.toggleFavorite = function(giftId) {
-        fetch('/api/favorites', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ gift_id: giftId })
-        })
-        .then(() => loadFavorites())
-        .catch(error => console.error('Error adding to favorites:', error));
-    };
-
-    window.removeFromFavorites = function(giftId) {
-        fetch(`/api/favorites/${giftId}`, { method: 'DELETE' })
-        .then(() => loadFavorites())
-        .catch(error => console.error('Error removing from favorites:', error));
-    };
+    // Global functions are now defined at the top of the script
 
     // small helper to escape HTML when injecting text
     function escapeHtml(unsafe) {
