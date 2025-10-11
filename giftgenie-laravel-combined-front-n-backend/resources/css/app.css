@@ -177,4 +177,14 @@ html, body {
 .gg-appear-delay-2 { animation-delay: 80ms; }
 .gg-appear-delay-3 { animation-delay: 120ms; }
 
+/* Additional utility classes for homepage */
+.shadow-glow {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Ensure proper container sizing */
+.container {
+    max-width: 1200px;
+}
+
 
