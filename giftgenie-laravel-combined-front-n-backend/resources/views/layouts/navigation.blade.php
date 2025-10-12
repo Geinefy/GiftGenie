@@ -31,6 +31,9 @@
                             {{ __('Favorites') }}
                         </x-nav-link>
                     @endauth
+                    <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
+                        {{ __('Contact') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -120,6 +123,9 @@
                     {{ __('Favorites') }}
                 </x-responsive-nav-link>
             @endauth
+            <x-responsive-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
+                {{ __('Contact') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
