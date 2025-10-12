@@ -6,10 +6,12 @@ use App\Http\Controllers\GiftsController;
 use App\Http\Controllers\GiftSuggestionController;
 use App\Http\Controllers\AiGiftController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FaqController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 

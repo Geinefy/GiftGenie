@@ -45,7 +45,7 @@
                                     id="name" 
                                     name="name" 
                                     value="{{ old('name') }}"
-                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100 @error('name') border-red-500 @enderror"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-4 focus:border-accent-4 dark:bg-gray-700 dark:text-gray-100 @error('name') border-red-500 @enderror"
                                     placeholder="Enter your full name"
                                     required
                                 >
@@ -64,7 +64,7 @@
                                     id="email" 
                                     name="email" 
                                     value="{{ old('email') }}"
-                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100 @error('email') border-red-500 @enderror"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-4 focus:border-accent-4 dark:bg-gray-700 dark:text-gray-100 @error('email') border-red-500 @enderror"
                                     placeholder="Enter your email address"
                                     required
                                 >
@@ -84,7 +84,7 @@
                                 id="subject" 
                                 name="subject" 
                                 value="{{ old('subject') }}"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100 @error('subject') border-red-500 @enderror"
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-4 focus:border-accent-4 dark:bg-gray-700 dark:text-gray-100 @error('subject') border-red-500 @enderror"
                                 placeholder="What's this about?"
                                 required
                             >
@@ -102,7 +102,7 @@
                                 id="message" 
                                 name="message" 
                                 rows="6"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-gray-100 resize-vertical @error('message') border-red-500 @enderror"
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-accent-4 focus:border-accent-4 dark:bg-gray-700 dark:text-gray-100 resize-vertical @error('message') border-red-500 @enderror"
                                 placeholder="Tell us how we can help you..."
                                 required
                             >{{ old('message') }}</textarea>
@@ -118,7 +118,7 @@
                         <div class="flex justify-end">
                             <button 
                                 type="submit" 
-                                class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-8 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                                class="gg-primary-gradient font-medium py-3 px-8 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-accent-4 focus:ring-offset-2 dark:focus:ring-offset-gray-800 hover:opacity-90"
                             >
                                 <span class="flex items-center">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,8 +135,8 @@
             <!-- Additional Contact Information -->
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-                    <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-cyan-100 dark:bg-cyan-900 p-3 rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-accent-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
                     </div>
@@ -147,8 +147,8 @@
                 </div>
 
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-                    <div class="bg-green-100 dark:bg-green-900 p-3 rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-teal-100 dark:bg-teal-900 p-3 rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-accent-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
@@ -159,8 +159,8 @@
                 </div>
 
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-                    <div class="bg-purple-100 dark:bg-purple-900 p-3 rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="bg-pink-100 dark:bg-pink-900 p-3 rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-accent-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                     </div>

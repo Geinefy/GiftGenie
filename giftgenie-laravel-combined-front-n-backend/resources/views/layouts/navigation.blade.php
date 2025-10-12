@@ -31,6 +31,9 @@
                             {{ __('Favorites') }}
                         </x-nav-link>
                     @endauth
+                    <x-nav-link :href="route('faq')" :active="request()->routeIs('faq')">
+                        {{ __('FAQ') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
                         {{ __('Contact') }}
                     </x-nav-link>
@@ -123,6 +126,9 @@
                     {{ __('Favorites') }}
                 </x-responsive-nav-link>
             @endauth
+            <x-responsive-nav-link :href="route('faq')" :active="request()->routeIs('faq')">
+                {{ __('FAQ') }}
+            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
                 {{ __('Contact') }}
             </x-responsive-nav-link>

@@ -14,7 +14,7 @@
             padding: 20px;
         }
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #00D1A1 0%, #FF2DCE 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -55,7 +55,7 @@
             background: #e8f4f8;
             padding: 20px;
             border-radius: 5px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #00D1A1;
             margin: 20px 0;
         }
         .footer {
